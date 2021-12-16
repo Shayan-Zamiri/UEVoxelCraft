@@ -12,3 +12,14 @@ Saved
 *.suo
 *.xcodeproj
 *.xcworkspace
+
+# Rider user specific files
+.idea
+SHP.sln.DotSettings.user
+
+# Assets and starter contents
+Content/Assets
+
+# plugings binaries and intermediates
+Plugins/*/Binaries
+Plugins/*/Intermediate
