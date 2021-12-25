@@ -19,6 +19,7 @@ SHP.sln.DotSettings.user
 
 # Assets and starter contents
 Content/Assets
+Content/StarterContent
 
 # plugings binaries and intermediates
 Plugins/*/Binaries
