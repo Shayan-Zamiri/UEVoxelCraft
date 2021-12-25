@@ -17,7 +17,7 @@ class AVoxelCharacter : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AVoxelCharacter();
-	
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

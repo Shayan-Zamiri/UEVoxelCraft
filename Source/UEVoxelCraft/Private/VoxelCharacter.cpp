@@ -7,9 +7,9 @@
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
 // Sets default values
-AVoxelCharacter::AVoxelCharacter()
+AVoxelCharacter::AVoxelCharacter() : PlayerCamera{nullptr}
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -23,14 +23,12 @@ AVoxelCharacter::AVoxelCharacter()
 void AVoxelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
 void AVoxelCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
