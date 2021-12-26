@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "VoxelCharacter.h"
+#include "VCCharacter.h"
 #include "Camera/CameraComponent.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
 // Sets default values
-AVoxelCharacter::AVoxelCharacter() : PlayerCamera{nullptr}
+AVCCharacter::AVCCharacter() : PlayerCamera{nullptr}
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -20,25 +20,25 @@ AVoxelCharacter::AVoxelCharacter() : PlayerCamera{nullptr}
 }
 
 // Called when the game starts or when spawned
-void AVoxelCharacter::BeginPlay()
+void AVCCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
 // Called every frame
-void AVoxelCharacter::Tick(float DeltaTime)
+void AVCCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
 // Called to bind functionality to input
-void AVoxelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AVCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// Axis
-	PlayerInputComponent->BindAxis("MoveForward", this, &AVoxelCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AVoxelCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("MoveForward", this, &AVCCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AVCCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Lookup", this, &ACharacter::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("Turn", this, &ACharacter::AddControllerYawInput);
 
@@ -48,12 +48,12 @@ void AVoxelCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 // FUNCTIONS
 
-void AVoxelCharacter::MoveForward(float InVal)
+void AVCCharacter::MoveForward(float InVal)
 {
 	AddMovementInput(GetActorForwardVector(), InVal);
 }
 
-void AVoxelCharacter::MoveRight(float InVal)
+void AVCCharacter::MoveRight(float InVal)
 {
 	AddMovementInput(GetActorRightVector(), InVal);
 }

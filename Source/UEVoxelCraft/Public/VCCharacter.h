@@ -4,19 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "VoxelCharacter.generated.h"
+#include "VCCharacter.generated.h"
 
 class UCameraComponent;
 
 UCLASS()
-class AVoxelCharacter : public ACharacter
+class AVCCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
 	// Sets default values for this character's properties
-	AVoxelCharacter();
+	AVCCharacter();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "UEVoxelCraftGameModeBase.generated.h"
+#include "VCGameModeBase.generated.h"
 
 /**
  * 
  */
-UCLASS()
-class UEVOXELCRAFT_API AUEVoxelCraftGameModeBase : public AGameModeBase
+UCLASS(Blueprintable)
+class UEVOXELCRAFT_API AVCGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
