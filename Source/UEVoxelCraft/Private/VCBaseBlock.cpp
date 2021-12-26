@@ -20,15 +20,14 @@ AVCBaseBlock::AVCBaseBlock() : bIsBreakable{true}
 	SMComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SMComp"));
 	SMComp->SetSimulatePhysics(false);
 	SMComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SMComp->SetRelativeLocation(FVector{BlockSize / 2, BlockSize / 2, 0.0f}); // set corner of static mesh exactly on RootSceneComp
 	SMComp->SetupAttachment(RootSceneComp);
 
 	BoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp"));
-	BoxComp->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	BoxComp->SetCollisionObjectType(ECC_WorldStatic);
-	BoxComp->SetBoxExtent(FVector{BlockSize/2, BlockSize/2, BlockSize/2});
+	BoxComp->SetCollisionProfileName("BlockAll");
+	BoxComp->SetBoxExtent(FVector{BlockSize / 2, BlockSize / 2, BlockSize / 2});
+	BoxComp->SetRelativeLocation(FVector{0.0f, 0.0f, /*because of SM_Cube's pivot*/ BlockSize / 2});
 	BoxComp->SetupAttachment(SMComp);
-
-	SMComp->SetRelativeLocation(FVector{BlockSize/2, BlockSize/2, BlockSize/2});
 }
 
 void AVCBaseBlock::OnConstruction(const FTransform& Transform)
