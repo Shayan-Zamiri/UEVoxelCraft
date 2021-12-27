@@ -5,18 +5,11 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-// Sets default values for this component's properties
 UVCHealthComponent::UVCHealthComponent() : DefaultHealth{0.0f}, CurrentHealth{0.0f}
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
-
-// Called when the game starts
 void UVCHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -28,12 +21,9 @@ void UVCHealthComponent::BeginPlay()
 	CurrentHealth = DefaultHealth;
 }
 
-// Called every frame
 void UVCHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
 }
 
 // FUNCTIONS

@@ -15,14 +15,10 @@ class UEVOXELCRAFT_API UVCHealthComponent : public UActorComponent
 
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
-	// Sets default values for this component's properties
 	UVCHealthComponent();
-
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	// FUNCTIONS
@@ -38,9 +34,9 @@ public:
 
 protected:
 	/** Default health used when we want to reset the actor's health or as a base for HUD progress bars */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Properties")
 	float DefaultHealth;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Properties")
 	float CurrentHealth;
 };

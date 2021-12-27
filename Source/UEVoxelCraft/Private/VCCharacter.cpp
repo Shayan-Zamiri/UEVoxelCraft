@@ -6,10 +6,8 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-// Sets default values
 AVCCharacter::AVCCharacter() : PlayerCamera{nullptr}
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	PlayerCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -19,19 +17,16 @@ AVCCharacter::AVCCharacter() : PlayerCamera{nullptr}
 	PlayerCamera->bUsePawnControlRotation = true;
 }
 
-// Called when the game starts or when spawned
 void AVCCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-// Called every frame
 void AVCCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-// Called to bind functionality to input
 void AVCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
