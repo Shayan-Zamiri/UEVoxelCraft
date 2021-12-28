@@ -17,6 +17,6 @@ UVCAssetManager& UVCAssetManager::Get()
 		return *VCAssetManager;
 	}
 
-	UE_LOG(LogTemp, Fatal, TEXT("Failed to get VCAssetManager"));
+	UE_LOG(LogTemp, Fatal, TEXT("Invalid asset manager class in DefaultEngine.ini, must be VCAssetManager"));
 	return *NewObject<UVCAssetManager>();
 }
