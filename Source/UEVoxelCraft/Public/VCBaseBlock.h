@@ -15,7 +15,9 @@ class UEVOXELCRAFT_API AVCBaseBlock : public AActor
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
 	AVCBaseBlock();
+	
 	virtual ~AVCBaseBlock() override = default;
+	
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	// FUNCTIONS
@@ -23,19 +25,22 @@ public:
 	FVector GetCenterOfCube() const;
 
 protected:
-	FVector GetAttachLocation(const FVector& ClickedLocation, const FVector& Normal);
+	FVector GetAttachLocation(const FVector& ClickedLocation, const FVector& Normal) const;
+	
 	void GridSnapBlock();
 
+	void DeleteInstancedMesh() const;
+
+	void MoveInstancedMesh(const FTransform& NewTransform) const;
+	
 	// GETTERS & SETTERS
 public:
+	void SetStaticMeshInstanceID(int32 ID);
+	
 	// PROPERTIES
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Components")
 	USceneComponent* RootSceneComp;
-
-	// doesn't have collision
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Components")
-	UStaticMeshComponent* SMComp;
 
 	// for collision data
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Components")
@@ -44,5 +49,7 @@ public:
 	static float BlockSize; // ex:100 100 100
 
 protected:
+	int32 SMInstanceIndex;
+	
 	float bIsBreakable; // TODO: Health Component
 };

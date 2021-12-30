@@ -1,4 +1,7 @@
 ﻿#include "VCBaseBlock.h"
+
+#include "VCGameModeBase.h"
+#include "VCProceduralGenerator.h"
 #include "Components/BoxComponent.h"
 
 // STATICS
@@ -17,17 +20,11 @@ AVCBaseBlock::AVCBaseBlock() : bIsBreakable{true}
 #endif
 	RootComponent = RootSceneComp;
 
-	SMComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SMComp"));
-	SMComp->SetSimulatePhysics(false);
-	SMComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SMComp->SetRelativeLocation(FVector{BlockSize / 2, BlockSize / 2, 0.0f}); // set corner of static mesh exactly on RootSceneComp
-	SMComp->SetupAttachment(RootSceneComp);
-
 	BoxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComp"));
 	BoxComp->SetCollisionProfileName("BlockAll");
 	BoxComp->SetBoxExtent(FVector{BlockSize / 2, BlockSize / 2, BlockSize / 2});
 	BoxComp->SetRelativeLocation(FVector{0.0f, 0.0f, /*because of SM_Cube's pivot*/ BlockSize / 2});
-	BoxComp->SetupAttachment(SMComp);
+	BoxComp->SetupAttachment(RootSceneComp);
 }
 
 void AVCBaseBlock::OnConstruction(const FTransform& Transform)
@@ -44,7 +41,7 @@ FVector AVCBaseBlock::GetCenterOfCube() const
 		(GetActorRightVector() + GetActorUpVector() + GetActorForwardVector()) * BlockSize / 2;
 }
 
-FVector AVCBaseBlock::GetAttachLocation(const FVector& ClickedLocation, const FVector& Normal)
+FVector AVCBaseBlock::GetAttachLocation(const FVector& ClickedLocation, const FVector& Normal) const
 {
 	return (ClickedLocation + Normal * BlockSize / 2).GridSnap(BlockSize);
 }
@@ -52,4 +49,35 @@ FVector AVCBaseBlock::GetAttachLocation(const FVector& ClickedLocation, const FV
 void AVCBaseBlock::GridSnapBlock()
 {
 	SetActorLocation(GetActorLocation().GridSnap(BlockSize));
+}
+
+void AVCBaseBlock::DeleteInstancedMesh() const
+{
+	AVCGameModeBase* GM = Cast<AVCGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (GM)
+	{
+		AVCProceduralGenerator* ProceduralGenerator = GM->GetProceduralGenerator();
+		if (ProceduralGenerator)
+		{
+			ProceduralGenerator->GetInstancedStaticMeshComponent()->RemoveInstance(SMInstanceIndex);
+		}
+	}
+}
+
+void AVCBaseBlock::MoveInstancedMesh(const FTransform& NewTransform) const
+{
+	AVCGameModeBase* GM = Cast<AVCGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (GM)
+	{
+		AVCProceduralGenerator* ProceduralGenerator = GM->GetProceduralGenerator();
+		if (ProceduralGenerator)
+		{
+			ProceduralGenerator->GetInstancedStaticMeshComponent()->UpdateInstanceTransform(SMInstanceIndex, NewTransform, true);
+		}
+	}
+}
+
+void AVCBaseBlock::SetStaticMeshInstanceID(int32 ID)
+{
+	SMInstanceIndex = ID;
 }

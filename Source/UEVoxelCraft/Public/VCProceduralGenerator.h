@@ -7,20 +7,22 @@
 class AVCBaseBlock;
 
 UCLASS(Blueprintable)
-class UEVOXELCRAFT_API UVCProceduralGenerator : public UObject
+class UEVOXELCRAFT_API AVCProceduralGenerator : public AActor
 {
 	GENERATED_BODY()
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
-	UVCProceduralGenerator();
-	virtual ~UVCProceduralGenerator() override = default;
-
+	AVCProceduralGenerator();
+	
+	virtual ~AVCProceduralGenerator() override = default;
+	
 	// FUNCTIONS
 public:
 	void Generate();
 
 	// GETTERS & SETTERS
-public:
+	UInstancedStaticMeshComponent* GetInstancedStaticMeshComponent();
+	
 	// PROPERTIES
 public:
 	static TArray<FVCBiomes> Biomes;
@@ -28,8 +30,14 @@ public:
 protected:
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category= "Properties")
-	TArray<TSubclassOf<AVCBaseBlock>> BlockClasses;
+	TSubclassOf<AVCBaseBlock> BlockClass;
 
+	UPROPERTY(BlueprintReadWrite, VisibleDefaultsOnly, Category= "Properties")
+	UInstancedStaticMeshComponent* ISMComp;
+
+	UPROPERTY(EditDefaultsOnly, Category= "Properties")
+	UStaticMesh* StaticMesh;
+	
 	UPROPERTY(EditDefaultsOnly, Category= "Properties")
 	int32 MapSize;
 
