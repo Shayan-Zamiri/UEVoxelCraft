@@ -14,23 +14,27 @@ class UEVOXELCRAFT_API AVCProceduralGenerator : public AActor
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
 	AVCProceduralGenerator();
-	
+
 	virtual ~AVCProceduralGenerator() override = default;
-	
+
+	virtual void Tick(float DeltaSeconds) override;
+
+protected:
+	virtual void BeginPlay() override;
+
 	// FUNCTIONS
 public:
 	void Generate();
 
 	// GETTERS & SETTERS
 	UInstancedStaticMeshComponent* GetInstancedStaticMeshComponent();
-	
+
 	// PROPERTIES
 public:
 	static TArray<FVCBiomes> Biomes;
-	
+
 	TQueue<FVector> SpawnLocations;
 protected:
-	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category= "Properties")
 	TSubclassOf<AVCBaseBlock> BlockClass;
 
@@ -39,7 +43,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category= "Properties")
 	UStaticMesh* StaticMesh;
-	
+
 	UPROPERTY(EditDefaultsOnly, Category= "Properties")
 	int32 MapSize;
 
@@ -53,4 +57,7 @@ protected:
 	// Scale or intensity of the noise
 	UPROPERTY(EditDefaultsOnly, Category= "Properties")
 	float Amplitude;
+private:
+	bool bIsGenerationComplete;
+	FVCPGWorker* PGWorker;
 };

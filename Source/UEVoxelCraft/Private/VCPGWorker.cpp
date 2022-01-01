@@ -56,9 +56,8 @@ uint32 FVCPGWorker::Run()
 				ProceduralGenerator->SpawnLocations.Enqueue(SpawnLocation.GridSnap(AVCBaseBlock::BlockSize));
 			}
 		}
+		bCompleteTask = true;
 	}
-	FPlatformProcess::Sleep(0.01f);
-	bCompleteTask = true;
 	return 0;
 }
 

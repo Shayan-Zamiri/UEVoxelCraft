@@ -18,10 +18,6 @@ void AVCGameModeBase::BeginPlay()
 	if (ProceduralGeneratorClass)
 	{
 		ProceduralGenerator = GetWorld()->SpawnActor<AVCProceduralGenerator>(ProceduralGeneratorClass, FVector{}, FRotator{});
-		if (ProceduralGenerator)
-		{
-			ProceduralGenerator->Generate();
-		}
 	}
 }
 
