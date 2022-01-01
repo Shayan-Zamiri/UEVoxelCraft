@@ -5,6 +5,7 @@
 #include "VCProceduralGenerator.generated.h"
 
 class AVCBaseBlock;
+class FVCPGWorker;
 
 UCLASS(Blueprintable)
 class UEVOXELCRAFT_API AVCProceduralGenerator : public AActor
@@ -26,7 +27,8 @@ public:
 	// PROPERTIES
 public:
 	static TArray<FVCBiomes> Biomes;
-
+	
+	TQueue<FVector> SpawnLocations;
 protected:
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category= "Properties")

@@ -31,6 +31,11 @@ void AVCBaseBlock::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 	GridSnapBlock();
+	AVCGameModeBase* GMB = Cast<AVCGameModeBase>(GetWorld()->GetAuthGameMode());
+	if (GMB)
+	{
+		ProceduralGenerator = GMB->GetProceduralGenerator();
+	}
 }
 
 // FUNCTIONS
@@ -51,33 +56,23 @@ void AVCBaseBlock::GridSnapBlock()
 	SetActorLocation(GetActorLocation().GridSnap(BlockSize));
 }
 
-void AVCBaseBlock::DeleteInstancedMesh() const
+void AVCBaseBlock::RemoveInstancedMesh() const
 {
-	AVCGameModeBase* GM = Cast<AVCGameModeBase>(GetWorld()->GetAuthGameMode());
-	if (GM)
+	if (ProceduralGenerator.IsValid())
 	{
-		AVCProceduralGenerator* ProceduralGenerator = GM->GetProceduralGenerator();
-		if (ProceduralGenerator)
-		{
-			ProceduralGenerator->GetInstancedStaticMeshComponent()->RemoveInstance(SMInstanceIndex);
-		}
+		ProceduralGenerator->GetInstancedStaticMeshComponent()->RemoveInstance(SMInstanceIndex);
 	}
 }
 
 void AVCBaseBlock::MoveInstancedMesh(const FTransform& NewTransform) const
 {
-	AVCGameModeBase* GM = Cast<AVCGameModeBase>(GetWorld()->GetAuthGameMode());
-	if (GM)
+	if (ProceduralGenerator.IsValid())
 	{
-		AVCProceduralGenerator* ProceduralGenerator = GM->GetProceduralGenerator();
-		if (ProceduralGenerator)
-		{
-			ProceduralGenerator->GetInstancedStaticMeshComponent()->UpdateInstanceTransform(SMInstanceIndex, NewTransform, true);
-		}
+		ProceduralGenerator->GetInstancedStaticMeshComponent()->UpdateInstanceTransform(SMInstanceIndex, NewTransform, true);
 	}
 }
 
-void AVCBaseBlock::SetStaticMeshInstanceID(int32 ID)
+void AVCBaseBlock::SetStaticMeshInstanceID(int32 Index)
 {
-	SMInstanceIndex = ID;
+	SMInstanceIndex = Index;
 }

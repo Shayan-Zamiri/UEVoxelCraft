@@ -5,6 +5,7 @@
 #include "VCBaseBlock.generated.h"
 
 class UBoxComponent;
+class AVCProceduralGenerator;
 
 UCLASS(Abstract, Blueprintable, BlueprintType)
 class UEVOXELCRAFT_API AVCBaseBlock : public AActor
@@ -29,16 +30,15 @@ protected:
 	
 	void GridSnapBlock();
 
-	void DeleteInstancedMesh() const;
+	void RemoveInstancedMesh() const;
 
 	void MoveInstancedMesh(const FTransform& NewTransform) const;
 	
 	// GETTERS & SETTERS
 public:
-	void SetStaticMeshInstanceID(int32 ID);
-	
+	void SetStaticMeshInstanceID(int32 Index);
+
 	// PROPERTIES
-public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Components")
 	USceneComponent* RootSceneComp;
 
@@ -46,6 +46,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Components")
 	UBoxComponent* BoxComp;
 
+	UPROPERTY()
+	TWeakObjectPtr<AVCProceduralGenerator> ProceduralGenerator;
+	
 	static float BlockSize; // ex:100 100 100
 
 protected:

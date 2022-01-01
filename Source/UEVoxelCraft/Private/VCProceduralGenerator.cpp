@@ -1,5 +1,6 @@
 ﻿#include "VCProceduralGenerator.h"
 #include "VCBaseBlock.h"
+#include "VCPGWorker.h"
 
 // STATICS
 
@@ -29,23 +30,23 @@ void AVCProceduralGenerator::Generate()
 	ISMComp->SetStaticMesh(StaticMesh);
 
 	RandomSeed = FMath::RandRange(1000, 9999);
-	const float MapSizeHalf = MapSize / 2;
-	for (int32 x = -MapSizeHalf; x < MapSizeHalf; x++)
+	const int32 MapSizeHalf = MapSize / 2;
+
+	FVCPGWorker* PGWorker = new FVCPGWorker{this, MapSizeHalf, RandomSeed, Frequency, Amplitude};
+
+	while (!PGWorker->bCompleteTask || !SpawnLocations.IsEmpty())
 	{
-		for (int32 y = -MapSizeHalf; y < MapSizeHalf; y++)
+		FVector SpawnLocation{};
+		if (SpawnLocations.Dequeue(SpawnLocation))
 		{
-			const float fX = static_cast<float>(x);
-			const float fY = static_cast<float>(y);
-			const FVector2D Location2D{fX, fY};
-			const float Height = FMath::PerlinNoise2D((Location2D + RandomSeed) / Frequency) * Amplitude;
-			FVector SpawnLocation{fX, fY, Height};
-			SpawnLocation *= AVCBaseBlock::BlockSize;
 			AVCBaseBlock* SpawnedBlock = GetWorld()->SpawnActor<AVCBaseBlock>(BlockClass, SpawnLocation, FRotator{});
-			const int32 InstanceID = ISMComp->AddInstance(
-				FTransform{FVector{SpawnLocation.GridSnap(AVCBaseBlock::BlockSize) + FVector{AVCBaseBlock::BlockSize / 2, AVCBaseBlock::BlockSize / 2, 0.0f}}});
+			const int32 InstanceID = ISMComp->AddInstanceWorldSpace(
+				FTransform{FVector{SpawnLocation + FVector{AVCBaseBlock::BlockSize / 2, AVCBaseBlock::BlockSize / 2, 0.0f}}});
 			SpawnedBlock->SetStaticMeshInstanceID(InstanceID);
 		}
 	}
+
+	delete PGWorker;
 }
 
 // GETTERS & SETTERS
