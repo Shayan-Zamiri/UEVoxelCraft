@@ -56,20 +56,20 @@ public:
 
 	// PROPERTIES
 protected:
-	UPROPERTY(EditAnywhere, BlueprintGetter= GetItemName, BlueprintSetter= SetItemName, Category= "Properties")
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemName", BlueprintSetter= "SetItemName", Category= "Properties")
 	FText ItemName;
 
-	UPROPERTY(EditAnywhere, BlueprintGetter= GetItemDescription, BlueprintSetter= SetItemDescription, Category= "Properties")
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemDescription", BlueprintSetter= "SetItemDescription", Category= "Properties")
 	FText ItemDescription;
 
 	/* Examples: Potion, Block, ... (defined in assset manager and project setting) */
-	UPROPERTY(EditAnywhere, BlueprintGetter= GetItemType, BlueprintSetter= SetItemType, Category= "Properties")
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemType", BlueprintSetter= "SetItemType", Category= "Properties")
 	FPrimaryAssetType ItemType;
 
 	/** Class required to spawn an instance of this item */
-	UPROPERTY(EditAnywhere, BlueprintGetter= GetItemClass, BlueprintSetter= SetItemClass, Category= "Properties", meta=(AssetBundles= Inventory))
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemClass", BlueprintSetter= "SetItemClass", Category= "Properties", meta=(AssetBundles= Inventory))
 	TSoftClassPtr<AActor> ItemClass;
 
-	UPROPERTY(EditAnywhere, BlueprintGetter= GetItemIcon, BlueprintSetter= SetItemIcon, Category= "Properties", meta=(AssetBundles= Inventory))
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemIcon", BlueprintSetter= "SetItemIcon", Category= "Properties", meta=(AssetBundles= Inventory))
 	TSoftObjectPtr<UTexture2D> ItemIcon;
 };
