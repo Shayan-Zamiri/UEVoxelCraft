@@ -6,65 +6,36 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-UVCItemDataAsset::UVCItemDataAsset() : ItemType{UVCAssetManager::InventoryItem}, ItemClass{nullptr}, ItemIcon{nullptr} {}
+UVCItemDataAsset::UVCItemDataAsset() : ItemType{UVCAssetManager::InventoryItem}, ItemClass{nullptr}, ItemIcon{nullptr}
+{
+}
 
 UVCItemDataAsset::UVCItemDataAsset(const FText& InItemName, const FText& InItemDescription, const FPrimaryAssetType& InItemType,
                                    const TSoftClassPtr<AActor>& InItemClass, const TSoftObjectPtr<UTexture2D>& InItemIcon)
-	: ItemName{InItemName}, ItemDescription{InItemDescription}, ItemType{InItemType}, ItemClass{InItemClass}, ItemIcon{InItemIcon} {}
-
-FPrimaryAssetId UVCItemDataAsset::GetPrimaryAssetId() const
+	: ItemName{InItemName}, ItemDescription{InItemDescription}, ItemType{InItemType}, ItemClass{InItemClass}, ItemIcon{InItemIcon}
 {
-	return FPrimaryAssetId(ItemType, GetFName());
 }
+
+FPrimaryAssetId UVCItemDataAsset::GetPrimaryAssetId() const { return FPrimaryAssetId(ItemType, GetFName()); }
 
 // GETTERS & SETTERS
 
-const FText& UVCItemDataAsset::GetItemName() const
-{
-	return ItemName;
-}
+const FText& UVCItemDataAsset::GetItemName() const { return ItemName; }
 
-void UVCItemDataAsset::SetItemName(const FText& InName)
-{
-	ItemName = InName;
-}
+void UVCItemDataAsset::SetItemName(const FText& InName) { ItemName = InName; }
 
-const FText& UVCItemDataAsset::GetItemDescription() const
-{
-	return ItemDescription;
-}
+const FText& UVCItemDataAsset::GetItemDescription() const { return ItemDescription; }
 
-void UVCItemDataAsset::SetItemDescription(const FText& InDescription)
-{
-	ItemDescription = InDescription;
-}
+void UVCItemDataAsset::SetItemDescription(const FText& InDescription) { ItemDescription = InDescription; }
 
-const FPrimaryAssetType& UVCItemDataAsset::GetItemType() const
-{
-	return ItemType;
-}
+const FPrimaryAssetType& UVCItemDataAsset::GetItemType() const { return ItemType; }
 
-void UVCItemDataAsset::SetItemType(const FPrimaryAssetType& InType)
-{
-	ItemType = InType;
-}
+void UVCItemDataAsset::SetItemType(const FPrimaryAssetType& InType) { ItemType = InType; }
 
-const TSoftClassPtr<AActor>& UVCItemDataAsset::GetItemClass() const
-{
-	return ItemClass;
-}
+const TSoftClassPtr<AActor>& UVCItemDataAsset::GetItemClass() const { return ItemClass; }
 
-void UVCItemDataAsset::SetItemClass(const TSoftClassPtr<AActor>& InClass)
-{
-	ItemClass = InClass;
-}
+void UVCItemDataAsset::SetItemClass(const TSoftClassPtr<AActor>& InClass) { ItemClass = InClass; }
 
-const TSoftObjectPtr<UTexture2D>& UVCItemDataAsset::GetItemIcon() const
-{
-	return ItemIcon;
-}
+const TSoftObjectPtr<UTexture2D>& UVCItemDataAsset::GetItemIcon() const { return ItemIcon; }
 
-void UVCItemDataAsset::SetItemIcon(const TSoftObjectPtr<UTexture2D>& InIcon)
-{
-	ItemIcon = InIcon;
-}
+void UVCItemDataAsset::SetItemIcon(const TSoftObjectPtr<UTexture2D>& InIcon) { ItemIcon = InIcon; }
