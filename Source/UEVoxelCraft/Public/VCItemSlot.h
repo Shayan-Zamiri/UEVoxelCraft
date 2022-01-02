@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "VCItemSlot.Generated.h"
 
 UCLASS()
@@ -29,13 +28,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category= "Functions")
 	bool IsSlotEmpty() const;
 
-	/**
-	 *	Defined so that our ItemSlots can be sorted by TSortedMap<>
-	 */
-	bool operator<(const UVCItemSlot& rhs) const
-	{
-		return SlotNumber < rhs.SlotNumber;
-	}
+	/* Defined so that our ItemSlots can be sorted by TSortedMap<> */
+	bool operator<(const UVCItemSlot& rhs) const { return SlotNumber < rhs.SlotNumber; }
 
 	// GETTERS & SETTERS
 public:
@@ -43,19 +37,19 @@ public:
 	uint8 GetSlotNumber() const;
 
 	UFUNCTION(BlueprintSetter)
-	void SetSlotNumber(const uint8 InSlotNum);
+	void SetSlotNumber(uint8 InSlotNum);
 
 	UFUNCTION(BlueprintGetter)
 	uint8 GetSlotMaxCount() const;
 
 	UFUNCTION(BlueprintSetter)
-	void SetSlotMaxCount(const uint8 InSlotMaxCount);
+	void SetSlotMaxCount(uint8 InSlotMaxCount);
 
 	UFUNCTION(BlueprintGetter)
 	uint8 GetSlotItemCount() const;
 
 	UFUNCTION(BlueprintSetter)
-	void SetSlotItemCount(const uint8 InSlotItemCount);
+	void SetSlotItemCount(uint8 InSlotItemCount);
 
 	UFUNCTION(BlueprintGetter)
 	const FPrimaryAssetType& GetSlotItemType() const;
@@ -65,15 +59,15 @@ public:
 
 	// PROPERTIES
 protected:
-	UPROPERTY(EditAnywhere, BlueprintGetter= GetSlotNumber, BlueprintSetter= SetSlotNumber, Category= "Properties|ItemSlot")
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotNumber", BlueprintSetter= "SetSlotNumber", Category= "Properties|ItemSlot")
 	uint8 SlotNumber;
 
-	UPROPERTY(EditAnywhere, BlueprintGetter= GetSlotMaxCount, BlueprintSetter= SetSlotMaxCount, Category= "Properties|ItemSlot")
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotMaxCount", BlueprintSetter= "SetSlotMaxCount", Category= "Properties|ItemSlot")
 	uint8 SlotMaxCount;
 
-	UPROPERTY(EditAnywhere, BlueprintGetter= GetSlotItemCount, BlueprintSetter= SetSlotItemCount, Category= "Properties|ItemSlot")
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotItemCount", BlueprintSetter= "SetSlotItemCount", Category= "Properties|ItemSlot")
 	uint8 SlotItemCount;
 
-	UPROPERTY(EditAnywhere, BlueprintGetter= GetSlotItemType, BlueprintSetter= SetSlotItemType, Category= "Properties|ItemSlot")
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotItemType", BlueprintSetter= "SetSlotItemType", Category= "Properties|ItemSlot")
 	FPrimaryAssetType SlotItemType;
 };
