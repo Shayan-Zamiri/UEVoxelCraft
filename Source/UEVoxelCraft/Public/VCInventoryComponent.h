@@ -31,6 +31,8 @@ public:
 
 	// Forcibly changes an Item in an ItemSlot. Adds the amount to the total number in InventoryData. If it is a completely new Item, handles strong references. 
 	void InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAsset* InItem, uint8 InCount);
+
+	UVCItemSlot* GetSlot(const FPrimaryAssetType& InSlotItemType, uint8 InSlotNumber);
 	
 	// GETTERS & SETTERS
 public:
