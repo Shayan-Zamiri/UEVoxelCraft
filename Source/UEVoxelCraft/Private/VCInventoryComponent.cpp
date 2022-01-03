@@ -23,6 +23,8 @@ UVCInventoryComponent::~UVCInventoryComponent()
 void UVCInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	InventorySlotsInitializer();
 }
 
 // FUNCTIONS
@@ -124,4 +126,27 @@ bool UVCInventoryComponent::IsSlotValid(const UVCItemSlot* InItemSlot) const
 	}
 	
 	return false;
+}
+
+UVCItemDataAsset* UVCInventoryComponent::GetItem(const UVCItemSlot* InItemSlot)
+{
+	check(IsValid(InItemSlot));
+	UVCItemDataAsset* Item = InventorySlots.FindChecked(InItemSlot->GetSlotNumber()).Value;
+	return Item;
+}
+
+void UVCInventoryComponent::InventorySlotsInitializer()
+{
+	for (auto& It : InventorySlotsEditor)
+	{
+		UVCItemSlot* ItemSlot = NewObject<UVCItemSlot>(this, UVCItemSlot::StaticClass());
+		ItemSlot->SetSlotNumber(It.Key.SlotNumber);
+		ItemSlot->SetSlotItemType(It.Key.SlotItemType);
+		ItemSlot->SetSlotItemCount(It.Key.SlotMaxCount);
+		ItemSlot->SetSlotItemCount(It.Key.SlotItemCount);
+		ItemsStrongReferences.Add(It.Value);
+		ItemSlotsStrongReferences.Add(ItemSlot);
+		InventorySlots.Add(ItemSlot->GetSlotNumber(), TPairInitializer<UVCItemSlot*, UVCItemDataAsset*>{ItemSlot, It.Value});
+	}
+	InventorySlotsEditor.Empty();
 }

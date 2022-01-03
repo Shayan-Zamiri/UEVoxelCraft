@@ -39,6 +39,12 @@ public:
 	bool IsSlotEmpty(const UVCItemSlot* InItemSlot) const;
 
 	bool IsSlotValid(const UVCItemSlot* InItemSlot) const;
+
+	UVCItemDataAsset* GetItem(const UVCItemSlot* InItemSlot);
+
+protected:
+	// Used to initialize inventory with the data that designer has imported in InventorySlotsEditor
+	void InventorySlotsInitializer();
 	
 	// GETTERS & SETTERS
 public:
