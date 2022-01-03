@@ -28,6 +28,9 @@ protected:
 public:
 	// Leave InCount to 1 for a decrement. Pass 0 to make the slot empty
 	void DecreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount = 1);
+
+	// Forcibly changes an Item in an ItemSlot. Adds the amount to the total number in InventoryData. If it is a completely new Item, handles strong references. 
+	void InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAsset* InItem, uint8 InCount);
 	
 	// GETTERS & SETTERS
 public:

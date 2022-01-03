@@ -35,8 +35,33 @@ void UVCInventoryComponent::DecreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8
 	{
 		UVCItemDataAsset*& Item = InventorySlots.FindChecked(InItemSlot->GetSlotNumber()).Value;
 		// Subtract from the total number of that item in inventory
-		uint8& Count = InventoryData.FindChecked(Item);
-		Count -= InCount;
-		Item = nullptr;
+		uint8* Count = InventoryData.Find(Item);
+		if(Count)
+		{
+			*Count -= InCount;
+			Item = nullptr;
+		}
 	}
+}
+
+void UVCInventoryComponent::InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAsset* InItem, uint8 InCount)
+{
+	check(IsValid(InItemSlot));
+	check(IsValid(InItem));
+	UVCItemDataAsset*& Item = InventorySlots.FindChecked(InItemSlot->GetSlotNumber()).Value;
+	Item = InItem;
+	// Add to the total number of that item in inventory
+	uint8* Count = InventoryData.Find(Item);
+	if(Count)
+	{
+		*Count += InCount;
+	}
+	// A totally new item
+	else
+	{
+		InventoryData.Add(InItem, InCount);
+		ItemsStrongReferences.Add(InItem);
+	}
+
+	InItemSlot->SetSlotItemCount(InItemSlot->GetSlotItemCount() + InCount);
 }
