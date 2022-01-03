@@ -89,3 +89,23 @@ UVCItemSlot* UVCInventoryComponent::GetSlot(const FPrimaryAssetType& InSlotItemT
 
 	return nullptr;
 }
+
+bool UVCInventoryComponent::IsSlotEmpty(const UVCItemSlot* InItemSlot) const
+{
+	if (InItemSlot)
+	{
+		return InItemSlot->IsSlotEmpty();
+	}
+
+	return false;
+}
+
+bool UVCInventoryComponent::IsSlotValid(const UVCItemSlot* InItemSlot) const
+{
+	if (InItemSlot)
+	{
+		return InventorySlots.Contains(InItemSlot->GetSlotNumber()) && InItemSlot->IsSlotValid();
+	}
+	
+	return false;
+}

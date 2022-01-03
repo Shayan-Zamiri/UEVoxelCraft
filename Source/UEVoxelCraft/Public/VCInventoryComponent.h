@@ -33,6 +33,10 @@ public:
 	void InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAsset* InItem, uint8 InCount);
 
 	UVCItemSlot* GetSlot(const FPrimaryAssetType& InSlotItemType, uint8 InSlotNumber);
+
+	bool IsSlotEmpty(const UVCItemSlot* InItemSlot) const;
+
+	bool IsSlotValid(const UVCItemSlot* InItemSlot) const;
 	
 	// GETTERS & SETTERS
 public:
