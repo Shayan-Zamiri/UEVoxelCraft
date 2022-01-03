@@ -2,6 +2,8 @@
 
 
 #include "VCInventoryComponent.h"
+#include "VCItemSlot.h"
+#include "VCItemDataAsset.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS 
 
@@ -25,3 +27,16 @@ void UVCInventoryComponent::BeginPlay()
 
 // FUNCTIONS
 
+void UVCInventoryComponent::DecreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount)
+{
+	check(InItemSlot)
+	InItemSlot->SetSlotItemCount(InCount == 0 ? 0 : InItemSlot->GetSlotItemCount() - InCount);
+	if(InItemSlot->GetSlotItemCount() == 0)
+	{
+		UVCItemDataAsset*& Item = InventorySlots.FindChecked(InItemSlot->GetSlotNumber()).Value;
+		// Subtract from the total number of that item in inventory
+		uint8& Count = InventoryData.FindChecked(Item);
+		Count -= InCount;
+		Item = nullptr;
+	}
+}

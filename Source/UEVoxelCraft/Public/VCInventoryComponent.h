@@ -26,7 +26,9 @@ protected:
 
 	// FUNCTIONS
 public:
-
+	// Leave InCount to 1 for a decrement. Pass 0 to make the slot empty
+	void DecreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount = 1);
+	
 	// GETTERS & SETTERS
 public:
 
