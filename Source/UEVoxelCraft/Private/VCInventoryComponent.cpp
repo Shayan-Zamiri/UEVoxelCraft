@@ -29,18 +29,19 @@ void UVCInventoryComponent::BeginPlay()
 
 void UVCInventoryComponent::DecreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount)
 {
-	check(InItemSlot)
-	InItemSlot->SetSlotItemCount(InCount == 0 ? 0 : InItemSlot->GetSlotItemCount() - InCount);
-	if(InItemSlot->GetSlotItemCount() == 0)
+	check(InItemSlot)	
+	// Subtract from the total number of that item in InventoryData
+	UVCItemDataAsset*& Item = InventorySlots.FindChecked(InItemSlot->GetSlotNumber()).Value;
+	uint8* Count = InventoryData.Find(Item);
+	if (Count)
 	{
-		UVCItemDataAsset*& Item = InventorySlots.FindChecked(InItemSlot->GetSlotNumber()).Value;
-		// Subtract from the total number of that item in inventory
-		uint8* Count = InventoryData.Find(Item);
-		if(Count)
-		{
-			*Count -= InCount;
-			Item = nullptr;
-		}
+		*Count = InCount == 0 ? *Count - InItemSlot->GetSlotItemCount() : *Count - InCount;
+	}
+
+	InItemSlot->SetSlotItemCount(InCount == 0 ? 0 : InItemSlot->GetSlotItemCount() - InCount);
+	if (InItemSlot->GetSlotItemCount() == 0)
+	{
+		Item = nullptr;
 	}
 }
 
