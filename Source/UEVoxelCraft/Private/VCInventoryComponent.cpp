@@ -7,10 +7,7 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS 
 
-UVCInventoryComponent::UVCInventoryComponent()
-{
-	PrimaryComponentTick.bCanEverTick = false;
-}
+UVCInventoryComponent::UVCInventoryComponent() { PrimaryComponentTick.bCanEverTick = false; }
 
 UVCInventoryComponent::~UVCInventoryComponent()
 {
@@ -31,20 +28,19 @@ void UVCInventoryComponent::BeginPlay()
 
 void UVCInventoryComponent::DecreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount)
 {
-	check(InItemSlot)	
+	check(IsValid(InItemSlot))
+	if (InItemSlot->IsSlotEmpty())
+		return;
+
 	// Subtract from the total number of that item in InventoryData
 	UVCItemDataAsset*& Item = InventorySlots.FindChecked(InItemSlot->GetSlotNumber()).Value;
+	checkf(Item, "Slot isn't empty so you should have this item in the InventoryData.");
 	uint8* Count = InventoryData.Find(Item);
-	if (Count)
-	{
-		*Count = InCount == 0 ? *Count - InItemSlot->GetSlotItemCount() : *Count - InCount;
-	}
+	checkf(Count, "you have the item so count have to exist in the InventoryData.")
+	*Count = InCount == 0 ? *Count - InItemSlot->GetSlotItemCount() : *Count - InCount;
 
 	InItemSlot->SetSlotItemCount(InCount == 0 ? 0 : InItemSlot->GetSlotItemCount() - InCount);
-	if (InItemSlot->GetSlotItemCount() == 0)
-	{
-		Item = nullptr;
-	}
+	if (InItemSlot->GetSlotItemCount() == 0) { Item = nullptr; }
 }
 
 void UVCInventoryComponent::InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAsset* InItem, uint8 InCount)
@@ -53,19 +49,6 @@ void UVCInventoryComponent::InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAss
 	check(IsValid(InItem));
 	UVCItemDataAsset*& Item = InventorySlots.FindChecked(InItemSlot->GetSlotNumber()).Value;
 	Item = InItem;
-	// Add to the total number of that item in inventory
-	uint8* Count = InventoryData.Find(Item);
-	if(Count)
-	{
-		*Count += InCount;
-	}
-	// A totally new item
-	else
-	{
-		InventoryData.Add(InItem, InCount);
-		ItemsStrongReferences.Add(InItem);
-	}
-
 	InItemSlot->SetSlotItemCount(InItemSlot->GetSlotItemCount() + InCount);
 }
 
@@ -75,57 +58,29 @@ UVCItemSlot* UVCInventoryComponent::FindEmptySlot(const FPrimaryAssetType& InSlo
 	{
 		UVCItemSlot* ItemSlot = It.Value.Key;
 		check(IsValid(ItemSlot));
-		if (ItemSlot->GetSlotItemType() == InSlotItemType && IsSlotEmpty(ItemSlot))
-		{
-			return ItemSlot;
-		}
+		if (ItemSlot->GetSlotItemType() == InSlotItemType && IsSlotEmpty(ItemSlot)) { return ItemSlot; }
 	}
-	
+
 	return nullptr;
 }
 
-UVCItemSlot* UVCInventoryComponent::GetSlot(const FPrimaryAssetType& InSlotItemType, uint8 InSlotNumber)
+UVCItemSlot* UVCInventoryComponent::GetSlot(uint8 InSlotNumber)
 {
-	// First checks if it could find the slot by just using	InventorySlots' index
 	UVCItemSlot* ItemSlot = InventorySlots.FindChecked(InSlotNumber).Key;
-	check(ItemSlot);
-	if (ItemSlot->GetSlotItemType() == InSlotItemType)
-	{
-		return ItemSlot;
-	}
-
-	// "Damn it I'll check them all" mode
-	for (auto It : InventorySlots)
-	{
-		ItemSlot = It.Value.Key;
-		check(IsValid(ItemSlot));
-		if (ItemSlot->GetSlotItemType() == InSlotItemType && ItemSlot->GetSlotNumber() == InSlotNumber)
-		{
-			return ItemSlot;
-		}
-	}
-
-	return nullptr;
+	check(IsValid(ItemSlot));
+	return ItemSlot;
 }
 
 bool UVCInventoryComponent::IsSlotEmpty(const UVCItemSlot* InItemSlot) const
 {
-	if (InItemSlot)
-	{
-		return InItemSlot->IsSlotEmpty();
-	}
-
-	return false;
+	check(IsValid(InItemSlot));
+	return InItemSlot->IsSlotEmpty();
 }
 
 bool UVCInventoryComponent::IsSlotValid(const UVCItemSlot* InItemSlot) const
 {
-	if (InItemSlot)
-	{
-		return InventorySlots.Contains(InItemSlot->GetSlotNumber()) && InItemSlot->IsSlotValid();
-	}
-	
-	return false;
+	check(IsValid(InItemSlot));
+	return InventorySlots.Contains(InItemSlot->GetSlotNumber()) && InItemSlot->IsSlotValid();
 }
 
 UVCItemDataAsset* UVCInventoryComponent::GetItem(const UVCItemSlot* InItemSlot)
