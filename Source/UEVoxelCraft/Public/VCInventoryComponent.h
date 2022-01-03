@@ -26,15 +26,16 @@ protected:
 
 	// FUNCTIONS
 public:
-	// Leave InCount to 1 for a decrement. Pass 0 to make the slot empty
+	/** Pass 0 to make the slot empty */
 	void DecreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount = 1);
 
-	// Forcibly changes an Item in an ItemSlot. Adds the amount to the total number in InventoryData. If it is a completely new Item, handles strong references. 
+	/** Forcibly changes an Item in an ItemSlot. Adds the amount to the total number in InventoryData.
+	 *  If it is a completely new Item, handles strong references. */
 	void InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAsset* InItem, uint8 InCount);
 
 	UVCItemSlot* FindEmptySlot(const FPrimaryAssetType& InSlotItemType);
 	
-	UVCItemSlot* GetSlot(const FPrimaryAssetType& InSlotItemType, uint8 InSlotNumber);
+	UVCItemSlot* GetSlot(uint8 InSlotNumber);
 
 	bool IsSlotEmpty(const UVCItemSlot* InItemSlot) const;
 
@@ -43,7 +44,7 @@ public:
 	UVCItemDataAsset* GetItem(const UVCItemSlot* InItemSlot);
 
 protected:
-	// Used to initialize inventory with the data that designer has imported in InventorySlotsEditor
+	/** Used to initialize inventory with the data that designer has entered in InventorySlotsEditor */
 	void InventorySlotsInitializer();
 	
 	// GETTERS & SETTERS
@@ -60,10 +61,10 @@ private:
 	UPROPERTY()
 	TArray<UVCItemSlot*> ItemSlotsStrongReferences;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties|Inventory")
+	UPROPERTY(EditAnywhere, Category= "Properties|Inventory")
 	UVCItemSlot* EquippedSlot;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Properties|Inventory")
+	UPROPERTY(EditAnywhere, Category= "Properties|Inventory")
 	TMap<UVCItemDataAsset*, uint8 /**count*/> InventoryData;
 
 	TSortedMap<uint8, TPair<UVCItemSlot*, UVCItemDataAsset*>> InventorySlots;

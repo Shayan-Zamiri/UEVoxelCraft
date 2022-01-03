@@ -22,7 +22,7 @@ UVCItemSlot::UVCItemSlot(const uint8 InSlotNumber, const uint8 InSlotMaxCount, c
 
 bool UVCItemSlot::IsSlotValid() const { return SlotNumber > 0 && SlotMaxCount > 0 && SlotItemType.IsValid(); }
 
-bool UVCItemSlot::IsSlotEmpty() const { return SlotItemCount == 0 && IsSlotValid(); }
+bool UVCItemSlot::IsSlotEmpty() const { return SlotItemCount == 0; }
 
 // GETTERS & SETTERS
 
