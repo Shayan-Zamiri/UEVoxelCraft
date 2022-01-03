@@ -15,23 +15,22 @@ UVCInventoryComponent::UVCInventoryComponent()
 	// ...
 }
 
+UVCInventoryComponent::~UVCInventoryComponent()
+{
+	ItemsStrongReferences.Empty();
+	ItemSlotsStrongReferences.Empty();
+	InventorySlots.Empty();
+	InventoryData.Empty();
+}
+
 
 // Called when the game starts
 void UVCInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
-}
-
-
-// Called every frame
-void UVCInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
+	InventorySlotsInitializer();
+	EquippedSlot = InventorySlots.FindChecked(1).Key;
 }
 
 // FUNCTIONS

@@ -7,21 +7,18 @@
 #include "VCInventoryComponent.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(VoxelCraft), meta=(BlueprintSpawnableComponent))
 class UEVOXELCRAFT_API UVCInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
-	// Sets default values for this component's properties
 	UVCInventoryComponent();
 
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual ~UVCInventoryComponent() override;
 	
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	// FUNCTIONS
