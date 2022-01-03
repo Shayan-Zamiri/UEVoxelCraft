@@ -65,3 +65,27 @@ void UVCInventoryComponent::InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAss
 
 	InItemSlot->SetSlotItemCount(InItemSlot->GetSlotItemCount() + InCount);
 }
+
+UVCItemSlot* UVCInventoryComponent::GetSlot(const FPrimaryAssetType& InSlotItemType, uint8 InSlotNumber)
+{
+	// First checks if it could find the slot by just using	InventorySlots' index
+	UVCItemSlot* ItemSlot = InventorySlots.FindChecked(InSlotNumber).Key;
+	check(ItemSlot);
+	if (ItemSlot->GetSlotItemType() == InSlotItemType)
+	{
+		return ItemSlot;
+	}
+
+	// "Damn it I'll check them all" mode
+	for (auto It : InventorySlots)
+	{
+		ItemSlot = It.Value.Key;
+		check(IsValid(ItemSlot));
+		if (ItemSlot->GetSlotItemType() == InSlotItemType && ItemSlot->GetSlotNumber() == InSlotNumber)
+		{
+			return ItemSlot;
+		}
+	}
+
+	return nullptr;
+}
