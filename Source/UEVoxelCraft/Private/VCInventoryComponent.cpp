@@ -67,6 +67,21 @@ void UVCInventoryComponent::InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAss
 	InItemSlot->SetSlotItemCount(InItemSlot->GetSlotItemCount() + InCount);
 }
 
+UVCItemSlot* UVCInventoryComponent::FindEmptySlot(const FPrimaryAssetType& InSlotItemType)
+{
+	for (auto It : InventorySlots)
+	{
+		UVCItemSlot* ItemSlot = It.Value.Key;
+		check(IsValid(ItemSlot));
+		if (ItemSlot->GetSlotItemType() == InSlotItemType && IsSlotEmpty(ItemSlot))
+		{
+			return ItemSlot;
+		}
+	}
+	
+	return nullptr;
+}
+
 UVCItemSlot* UVCInventoryComponent::GetSlot(const FPrimaryAssetType& InSlotItemType, uint8 InSlotNumber)
 {
 	// First checks if it could find the slot by just using	InventorySlots' index
