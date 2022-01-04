@@ -33,8 +33,7 @@ protected:
 	/** Pass 0 to make the slot full */
 	void IncreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount = 1);
 
-	/** Forcibly changes an Item in an ItemSlot. Adds the amount to the total number in InventoryData.
-	 *  If it is a completely new Item, handles strong references. */
+	/** Forcibly changes an Item in an ItemSlot */
 	void InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAsset* InItem, uint8 InCount);
 
 	/** Find the first empty slot */
