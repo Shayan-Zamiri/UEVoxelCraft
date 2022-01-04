@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "VCItemSlot.Generated.h"
 
+class UVCItemDataAsset;
+
 UCLASS()
 class UEVOXELCRAFT_API UVCItemSlot : public UObject
 {
@@ -30,44 +32,45 @@ public:
 
 	/* Defined so that our ItemSlots can be sorted by TSortedMap<> */
 	bool operator<(const UVCItemSlot& rhs) const { return SlotNumber < rhs.SlotNumber; }
+	
+	int32 GetSlotMaxCount() const;
+
 
 	// GETTERS & SETTERS
 public:
 	UFUNCTION(BlueprintGetter)
-	uint8 GetSlotNumber() const;
+	int32 GetSlotNumber() const;
 
 	UFUNCTION(BlueprintSetter)
-	void SetSlotNumber(uint8 InSlotNum);
+	void SetSlotNumber(int32 InSlotNum);
 
 	UFUNCTION(BlueprintGetter)
-	uint8 GetSlotMaxCount() const;
+	int32 GetSlotItemCount() const;
 
 	UFUNCTION(BlueprintSetter)
-	void SetSlotMaxCount(uint8 InSlotMaxCount);
-
-	UFUNCTION(BlueprintGetter)
-	uint8 GetSlotItemCount() const;
-
-	UFUNCTION(BlueprintSetter)
-	void SetSlotItemCount(uint8 InSlotItemCount);
+	void SetSlotItemCount(int32 InSlotItemCount);
 
 	UFUNCTION(BlueprintGetter)
 	const FPrimaryAssetType& GetSlotItemType() const;
 
 	UFUNCTION(BlueprintSetter)
 	void SetSlotItemType(const FPrimaryAssetType& InSlotItemType);
-
+	
+	const TWeakObjectPtr<UVCItemDataAsset>& GetItemReference() const; 	
+	
+	void SetItemReference(UVCItemDataAsset* InOutItemDataAsset);
+	
 	// PROPERTIES
 protected:
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotNumber", BlueprintSetter= "SetSlotNumber", Category= "Properties|ItemSlot")
-	uint8 SlotNumber;
-
-	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotMaxCount", BlueprintSetter= "SetSlotMaxCount", Category= "Properties|ItemSlot")
-	uint8 SlotMaxCount;
+	int32 SlotNumber;
 
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotItemCount", BlueprintSetter= "SetSlotItemCount", Category= "Properties|ItemSlot")
-	uint8 SlotItemCount;
+	int32 SlotItemCount;
 
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotItemType", BlueprintSetter= "SetSlotItemType", Category= "Properties|ItemSlot")
 	FPrimaryAssetType SlotItemType;
+
+	UPROPERTY()
+	TWeakObjectPtr<UVCItemDataAsset> ItemReference;
 };

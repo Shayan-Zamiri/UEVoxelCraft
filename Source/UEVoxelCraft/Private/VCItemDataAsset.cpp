@@ -6,17 +6,25 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-UVCItemDataAsset::UVCItemDataAsset() : ItemType{UVCAssetManager::InventoryItem}, ItemClass{nullptr}, ItemIcon{nullptr}
+UVCItemDataAsset::UVCItemDataAsset() : MaxItemCount{1}, ItemType{UVCAssetManager::InventoryItem}, ItemClass{nullptr}, ItemIcon{nullptr}
 {
 }
 
-UVCItemDataAsset::UVCItemDataAsset(const FText& InItemName, const FText& InItemDescription, const FPrimaryAssetType& InItemType,
+UVCItemDataAsset::UVCItemDataAsset(int32 InMaxItemCount, const FText& InItemName, const FText& InItemDescription, const FPrimaryAssetType& InItemType,
                                    const TSoftClassPtr<AActor>& InItemClass, const TSoftObjectPtr<UTexture2D>& InItemIcon)
-	: ItemName{InItemName}, ItemDescription{InItemDescription}, ItemType{InItemType}, ItemClass{InItemClass}, ItemIcon{InItemIcon}
+	: MaxItemCount{InMaxItemCount}, ItemName{InItemName}, ItemDescription{InItemDescription}, ItemType{InItemType}, ItemClass{InItemClass}, ItemIcon{InItemIcon}
 {
 }
 
 FPrimaryAssetId UVCItemDataAsset::GetPrimaryAssetId() const { return FPrimaryAssetId(ItemType, GetFName()); }
+
+int32 UVCItemDataAsset::GetMaxItemCount() const { return MaxItemCount; }
+
+void UVCItemDataAsset::SetMaxItemCount(int32 InMaxItemCount)
+{
+	checkf(InMaxItemCount<=0, TEXT("InMaxItemCount is less than or equal to zero!"));
+	MaxItemCount = InMaxItemCount;
+}
 
 // GETTERS & SETTERS
 
