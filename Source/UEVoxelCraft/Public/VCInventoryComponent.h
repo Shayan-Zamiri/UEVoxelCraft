@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "VCItemDataAsset.h"
 #include "VCTypes.h"
 #include "Components/ActorComponent.h"
 #include "VCInventoryComponent.generated.h"
@@ -33,7 +34,11 @@ public:
 	 *  If it is a completely new Item, handles strong references. */
 	void InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAsset* InItem, uint8 InCount);
 
-	UVCItemSlot* FindEmptySlot(const FPrimaryAssetType& InSlotItemType);
+	/** Find the first empty slot */
+	UVCItemSlot* FindEmptySlot();
+
+	/** Find the first Appropriate slot that can stack this item(AssetID = Name + Type). */
+	UVCItemSlot* FindAppropriateSlot(const FPrimaryAssetId& AssetID);
 	
 	UVCItemSlot* GetSlot(uint8 InSlotNumber);
 
