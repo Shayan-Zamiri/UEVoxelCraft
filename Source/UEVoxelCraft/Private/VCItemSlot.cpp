@@ -3,41 +3,50 @@
 
 #include "VCItemSlot.h"
 
+#include "VCItemDataAsset.h"
+
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-UVCItemSlot::UVCItemSlot() : SlotNumber{0}, SlotMaxCount{0}, SlotItemCount{0}
+UVCItemSlot::UVCItemSlot() : SlotNumber{0}, SlotItemCount{0}
 {
 }
 
-UVCItemSlot::UVCItemSlot(const FPrimaryAssetType InSlotItemType, const uint8 InSlotNumber) : SlotNumber{InSlotNumber}, SlotMaxCount{0}, SlotItemCount{0}, SlotItemType{InSlotItemType}
+UVCItemSlot::UVCItemSlot(const FPrimaryAssetType InSlotItemType, const uint8 InSlotNumber)
+	: SlotNumber{InSlotNumber}, SlotItemCount{0}, SlotItemType{InSlotItemType}
 {
 }
 
-UVCItemSlot::UVCItemSlot(const uint8 InSlotNumber, const uint8 InSlotMaxCount, const FPrimaryAssetType& InItemType) : SlotNumber{InSlotNumber}, SlotMaxCount{InSlotMaxCount},
-                                                                                                                      SlotItemCount{0}, SlotItemType{InItemType}
+UVCItemSlot::UVCItemSlot(const uint8 InSlotNumber, const uint8 InSlotMaxCount, const FPrimaryAssetType& InItemType)
+	: SlotNumber{InSlotNumber}, SlotItemCount{0}, SlotItemType{InItemType}
 {
 }
 
 // FUNCTIONS
 
-bool UVCItemSlot::IsSlotValid() const { return SlotNumber > 0 && SlotMaxCount > 0 && SlotItemType.IsValid(); }
+bool UVCItemSlot::IsSlotValid() const { return SlotNumber > 0 && SlotItemType.IsValid(); }
 
-bool UVCItemSlot::IsSlotEmpty() const { return SlotItemCount == 0; }
+bool UVCItemSlot::IsSlotEmpty() const
+{
+	checkf(IsSlotValid(), TEXT("%d isn't valid"), SlotNumber);
+	return SlotItemCount == 0 && ItemReference.IsValid();
+}
 
 // GETTERS & SETTERS
 
-uint8 UVCItemSlot::GetSlotNumber() const { return SlotNumber; }
+int32 UVCItemSlot::GetSlotNumber() const { return SlotNumber; }
 
-void UVCItemSlot::SetSlotNumber(uint8 InSlotNum) { SlotNumber = InSlotNum; }
+void UVCItemSlot::SetSlotNumber(int32 InSlotNum) { SlotNumber = InSlotNum; }
 
-uint8 UVCItemSlot::GetSlotMaxCount() const { return SlotMaxCount; }
+int32 UVCItemSlot::GetSlotMaxCount() const { return ItemReference.IsValid() ? ItemReference.Get()->GetMaxItemCount() : 0; }
 
-void UVCItemSlot::SetSlotMaxCount(uint8 InSlotMaxCount) { SlotMaxCount = InSlotMaxCount; }
+int32 UVCItemSlot::GetSlotItemCount() const { return SlotItemCount; }
 
-uint8 UVCItemSlot::GetSlotItemCount() const { return SlotItemCount; }
-
-void UVCItemSlot::SetSlotItemCount(uint8 InSlotItemCount) { SlotItemCount = InSlotItemCount; }
+void UVCItemSlot::SetSlotItemCount(int32 InSlotItemCount) { SlotItemCount = InSlotItemCount; }
 
 const FPrimaryAssetType& UVCItemSlot::GetSlotItemType() const { return SlotItemType; }
 
 void UVCItemSlot::SetSlotItemType(const FPrimaryAssetType& InSlotItemType) { SlotItemType = InSlotItemType; }
+
+const TWeakObjectPtr<UVCItemDataAsset>& UVCItemSlot::GetItemReference() const { return ItemReference; }
+
+void UVCItemSlot::SetItemReference(UVCItemDataAsset* InOutItemDataAsset) { ItemReference = InOutItemDataAsset; }
