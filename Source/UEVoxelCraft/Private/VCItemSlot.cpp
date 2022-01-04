@@ -27,7 +27,7 @@ bool UVCItemSlot::IsSlotValid() const { return SlotNumber > 0 && SlotItemType.Is
 
 bool UVCItemSlot::IsSlotEmpty() const
 {
-	checkf(IsSlotValid(), TEXT("%d isn't valid"), SlotNumber);
+	checkf(IsSlotValid(), TEXT("slot number%d isn't valid"), SlotNumber);
 	return SlotItemCount == 0 && ItemReference.IsValid();
 }
 
@@ -41,7 +41,12 @@ int32 UVCItemSlot::GetSlotMaxCount() const { return ItemReference.IsValid() ? It
 
 int32 UVCItemSlot::GetSlotItemCount() const { return SlotItemCount; }
 
-void UVCItemSlot::SetSlotItemCount(int32 InSlotItemCount) { SlotItemCount = InSlotItemCount; }
+void UVCItemSlot::SetSlotItemCount(int32 InSlotItemCount)
+{
+	SlotItemCount = InSlotItemCount < 0 ? 1 : InSlotItemCount;
+	if (SlotItemCount == 0)
+		ItemReference.Reset();
+}
 
 const FPrimaryAssetType& UVCItemSlot::GetSlotItemType() const { return SlotItemType; }
 
