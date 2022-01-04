@@ -52,16 +52,41 @@ void UVCInventoryComponent::InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAss
 	InItemSlot->SetSlotItemCount(InItemSlot->GetSlotItemCount() + InCount);
 }
 
-UVCItemSlot* UVCInventoryComponent::FindEmptySlot(const FPrimaryAssetType& InSlotItemType)
+UVCItemSlot* UVCInventoryComponent::FindEmptySlot()
 {
-	for (auto It : InventorySlots)
+	for (auto It&   : InventorySlots)
 	{
 		UVCItemSlot* ItemSlot = It.Value.Key;
 		check(IsValid(ItemSlot));
-		if (ItemSlot->GetSlotItemType() == InSlotItemType && IsSlotEmpty(ItemSlot)) { return ItemSlot; }
+		if (IsSlotEmpty(ItemSlot)) { return ItemSlot; }
 	}
 
 	return nullptr;
+}
+
+UVCItemSlot* UVCInventoryComponent::FindAppropriateSlot(const FPrimaryAssetId& AssetID)
+{
+	bool bIsEmptySlotFounded = false;
+	UVCItemSlot* ReturnSlot = nullptr;
+	for (auto& It : InventorySlots)
+	{
+		UVCItemDataAsset* Item = It.Value.Value;
+		UVCItemSlot* ItemSlot = It.Value.Key;
+		check(IsValid(ItemSlot));
+		// Appropriate Stackable Slot
+		if (Item && Item->GetPrimaryAssetId() == AssetID && ItemSlot->GetSlotItemCount() < ItemSlot->GetSlotMaxCount())
+		{
+			ReturnSlot = ItemSlot;
+			break;
+		}
+		// Appropriate Empty Slot
+		if (!bIsEmptySlotFounded && ItemSlot->GetSlotItemType() == AssetID.PrimaryAssetType && IsSlotEmpty(ItemSlot))
+		{
+			ReturnSlot = ItemSlot;
+			bIsEmptySlotFounded = true;
+		}
+	}
+	return ReturnSlot;
 }
 
 UVCItemSlot* UVCInventoryComponent::GetSlot(uint8 InSlotNumber)
