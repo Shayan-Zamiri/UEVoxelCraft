@@ -21,12 +21,12 @@ public:
 	UVCInventoryComponent();
 
 	virtual ~UVCInventoryComponent() override;
-	
+
 protected:
 	virtual void BeginPlay() override;
 
 	// FUNCTIONS
-public:
+protected:
 	/** Pass 0 to make the slot empty */
 	void DecreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount = 1);
 
@@ -42,8 +42,11 @@ public:
 
 	/** Find the first Appropriate slot that can stack this item(AssetID = Name + Type). */
 	UVCItemSlot* FindAppropriateSlot(const FPrimaryAssetId& AssetID);
-	
+
 	UVCItemSlot* GetSlot(uint8 InSlotNumber);
+
+	/** number of slots in InventorySlots */
+	int32 GetSlotsNum() const;
 
 	bool IsSlotEmpty(const UVCItemSlot* InItemSlot) const;
 
@@ -51,15 +54,18 @@ public:
 
 	UVCItemDataAsset* GetItem(const UVCItemSlot* InItemSlot);
 
-protected:
+	void AddItemToInventoryData(UVCItemDataAsset* InOutItemDataAsset, int32 InCount = 1);
+
+	void RemoveItemFromInventoryData(UVCItemDataAsset* InItemDataAsset, int32 InCount = 1);
+
+private:
 	/** Used to initialize inventory with the data that designer has entered in InventorySlotsEditor */
 	void InventorySlotsInitializer();
-	
+
 	// GETTERS & SETTERS
 public:
-
 	// PROPERTIES
-private:
+protected:
 	UPROPERTY(EditAnywhere, Category= "Properties|Inventory")
 	TMap<FVCEditorItemSlot, UVCItemDataAsset*> InventorySlotsEditor;
 
@@ -73,7 +79,7 @@ private:
 	UVCItemSlot* EquippedSlot;
 
 	UPROPERTY(EditAnywhere, Category= "Properties|Inventory")
-	TMap<UVCItemDataAsset*, uint8 /**count*/> InventoryData;
+	TMap<UVCItemDataAsset*, int32 /**count*/> InventoryData;
 
 	TSortedMap<uint8, TPair<UVCItemSlot*, UVCItemDataAsset*>> InventorySlots;
 };
