@@ -13,13 +13,25 @@ class UEVOXELCRAFT_API AVCHUD : public AHUD
 
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
-	AVCHUD() = default;
+	AVCHUD();
 	virtual ~AVCHUD() override = default;
 
 	virtual void DrawHUD() override;
 
 	// PROPERTIES
 private:
+	UPROPERTY(VisibleAnywhere, Category= "Properties")
+	float CrosshairX;
+	
+	UPROPERTY(VisibleAnywhere, Category= "Properties")
+	float CrosshairY;
+	
+	UPROPERTY(EditAnywhere, Category= "Properties")
+	float CrosshairXLocation;
+	
+	UPROPERTY(EditAnywhere, Category= "Properties")
+	float CrosshairYLocation;
+	
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	UTexture2D* CrosshairTex;
 };
