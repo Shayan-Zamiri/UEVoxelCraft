@@ -7,6 +7,8 @@
 #include "VCCharacter.generated.h"
 
 class UCameraComponent;
+class AVCBaseBlock;
+class AVCPlayerController;
 
 UCLASS()
 class AVCCharacter : public ACharacter
@@ -27,13 +29,30 @@ protected:
 	// FUNCTIONS
 private:
 	UFUNCTION()
+	void Action();
+
+	UFUNCTION()
 	void MoveForward(float InVal);
 
 	UFUNCTION()
 	void MoveRight(float InVal);
 
+	/** returns true if it hits something */
+	bool LineTraceBlock(const FVector& InTargetPoint, FVector& OutLocation, FVector& OutNormal, AVCBaseBlock*& OutHitBlock) const;
+
 	// PROPERTIES
+protected:
+	/** This is just for test, we will add inventory */
+	UPROPERTY(EditAnywhere, Category= "Properties")
+	TSubclassOf<AVCBaseBlock> BlockClassToSpawn;
+
+	UPROPERTY(EditAnywhere, Category= "Properties")
+	float BlockSpawnDistance;
+	
 private:
 	UPROPERTY()
-	UCameraComponent* PlayerCamera;
+	TWeakObjectPtr<AVCPlayerController> VCPlayerController;
+
+	UPROPERTY(EditAnywhere, Category= "Properties|Components")
+	UCameraComponent* CameraComp;
 };

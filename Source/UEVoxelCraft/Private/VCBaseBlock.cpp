@@ -44,12 +44,6 @@ FVector AVCBaseBlock::GetCenterOfCube() const
 		(GetActorRightVector() + GetActorUpVector() + GetActorForwardVector()) * BlockSize / 2;
 }
 
-FVector AVCBaseBlock::GetAttachLocation(const FVector& ClickedLocation, const FVector& Normal)
-{
-	return (ClickedLocation + Normal * BlockSize / 2).GridSnap(BlockSize);
-}
+FVector AVCBaseBlock::GetAttachLocation(const FVector& ClickedLocation, const FVector& Normal) { return ((ClickedLocation + Normal) - BlockSize / 2).GridSnap(BlockSize); }
 
-void AVCBaseBlock::GridSnapBlock()
-{
-	SetActorLocation(GetActorLocation().GridSnap(BlockSize));
-}
+void AVCBaseBlock::GridSnapBlock() { SetActorLocation(GetActorLocation().GridSnap(BlockSize)); }

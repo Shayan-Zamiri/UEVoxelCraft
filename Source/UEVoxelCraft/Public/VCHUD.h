@@ -18,20 +18,26 @@ public:
 
 	virtual void DrawHUD() override;
 
+	// GETTERS & SETTERS
+public:
+	float GetCrosshairX() const;
+
+	float GetCrosshairY() const;
+
 	// PROPERTIES
 private:
 	UPROPERTY(VisibleAnywhere, Category= "Properties")
 	float CrosshairX;
-	
+
 	UPROPERTY(VisibleAnywhere, Category= "Properties")
 	float CrosshairY;
-	
+
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	float CrosshairXLocation;
-	
+
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	float CrosshairYLocation;
-	
+
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	UTexture2D* CrosshairTex;
 };
