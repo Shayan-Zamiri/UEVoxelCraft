@@ -5,6 +5,7 @@
 #include "VCBaseBlock.generated.h"
 
 class UBoxComponent;
+class UVCHealthComponent;
 
 UCLASS(Abstract, Blueprintable, BlueprintType)
 class UEVOXELCRAFT_API AVCBaseBlock : public AActor
@@ -22,28 +23,32 @@ public:
 	// FUNCTIONS
 public:
 	FVector GetCenterOfCube() const;
-	
+
 	static FVector GetAttachLocation(const FVector& ClickedLocation, const FVector& Normal);
 
 	void GridSnapBlock();
+
+	/** A wrapper for HealthComp->HandleTakeDamage(...)*/
+	void TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
+										  AActor* DamageCauser);
 
 	// GETTERS & SETTERS
 public:
 	// PROPERTIES
 public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Components")
-	USceneComponent* RootSceneComp;
-
-	// doesn't have collision
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Components")
-	UStaticMeshComponent* SMComp;
-
-	// for collision data
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Components")
-	UBoxComponent* BoxComp;
-
 	static float BlockSize; // ex:100 100 100
 
-protected:
-	float bIsBreakable; // TODO: Health Component
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Properties|Components")
+	USceneComponent* RootSceneComp;
+
+	/** Doesn't have collision */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Properties|Components")
+	UStaticMeshComponent* SMComp;
+
+	/** For collision data */
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Properties|Components")
+	UBoxComponent* BoxComp;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Properties|Components")
+	UVCHealthComponent* HealthComp;
 };

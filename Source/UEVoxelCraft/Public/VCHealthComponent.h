@@ -3,10 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "VCTypes.h"
 #include "Components/ActorComponent.h"
 #include "VCHealthComponent.generated.h"
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnTakeDamageSignature, class UVCHealthComponent*, HealthComponent, float, CurrentHealth, AController*, InstigatedBy);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class UEVOXELCRAFT_API UVCHealthComponent : public UActorComponent
@@ -24,12 +23,23 @@ protected:
 	// FUNCTIONS
 public:
 	UFUNCTION()
-	void HandleTakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void HandleTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
+	                      AActor* DamageCauser);
 
+
+	// GETTERS & SETTERS
+public:
+	float GetCurrentHealth() const;
+
+	void  SetCurrentHealth(float InCurrentHealth) ;
+	
+	float GetDefaultHealth() const;
+
+	void SetDefaultHealth(float InDefaultHealth) ;
+	
 	// PROPERTIES
 public:
 	/** Any function that wants to know about the actor being damaged must be bound to this */
-	UPROPERTY()
 	FOnTakeDamageSignature OnTakeDamage;
 
 protected:

@@ -1,4 +1,5 @@
 ﻿#include "VCBaseBlock.h"
+#include "VCHealthComponent.h"
 #include "Components/BoxComponent.h"
 
 // STATICS
@@ -7,7 +8,7 @@ float AVCBaseBlock::BlockSize = 100.0f;
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-AVCBaseBlock::AVCBaseBlock() : bIsBreakable{true}
+AVCBaseBlock::AVCBaseBlock()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -28,6 +29,8 @@ AVCBaseBlock::AVCBaseBlock() : bIsBreakable{true}
 	BoxComp->SetBoxExtent(FVector{BlockSize / 2, BlockSize / 2, BlockSize / 2});
 	BoxComp->SetRelativeLocation(FVector{0.0f, 0.0f, /*because of SM_Cube's pivot*/ BlockSize / 2});
 	BoxComp->SetupAttachment(SMComp);
+
+	HealthComp = CreateDefaultSubobject<UVCHealthComponent>(TEXT("HealthComp"));
 }
 
 void AVCBaseBlock::OnConstruction(const FTransform& Transform)
@@ -44,6 +47,15 @@ FVector AVCBaseBlock::GetCenterOfCube() const
 		(GetActorRightVector() + GetActorUpVector() + GetActorForwardVector()) * BlockSize / 2;
 }
 
-FVector AVCBaseBlock::GetAttachLocation(const FVector& ClickedLocation, const FVector& Normal) { return ((ClickedLocation + Normal) - BlockSize / 2).GridSnap(BlockSize); }
+FVector AVCBaseBlock::GetAttachLocation(const FVector& ClickedLocation, const FVector& Normal)
+{
+	return ((ClickedLocation + Normal) - BlockSize / 2).GridSnap(BlockSize);
+}
 
 void AVCBaseBlock::GridSnapBlock() { SetActorLocation(GetActorLocation().GridSnap(BlockSize)); }
+
+void AVCBaseBlock::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
+                              AActor* DamageCauser)
+{
+	HealthComp->HandleTakeDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
+}

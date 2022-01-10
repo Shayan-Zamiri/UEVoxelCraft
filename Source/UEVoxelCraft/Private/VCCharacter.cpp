@@ -10,7 +10,7 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-AVCCharacter::AVCCharacter() : BlockSpawnDistance{300.0f}, VCPlayerController{nullptr}, BlockClassToSpawn{nullptr}
+AVCCharacter::AVCCharacter() : BlockClassToSpawn{nullptr}, BlockSpawnDistance{300.0f}, VCPlayerController{nullptr}
 {
 	PrimaryActorTick.bCanEverTick = false;
 
