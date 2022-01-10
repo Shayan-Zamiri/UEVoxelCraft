@@ -19,6 +19,9 @@ public:
 	virtual ~AVCBaseBlock() override = default;
 
 	virtual void OnConstruction(const FTransform& Transform) override;
+	
+	virtual float TakeDamage(float DamageAmount,  const FDamageEvent& DamageEvent, AController* EventInstigator,
+	                        AActor* DamageCauser) override;
 
 	// FUNCTIONS
 public:
@@ -27,10 +30,6 @@ public:
 	static FVector GetAttachLocation(const FVector& ClickedLocation, const FVector& Normal);
 
 	void GridSnapBlock();
-
-	/** A wrapper for HealthComp->HandleTakeDamage(...)*/
-	void TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
-										  AActor* DamageCauser);
 
 	// GETTERS & SETTERS
 public:

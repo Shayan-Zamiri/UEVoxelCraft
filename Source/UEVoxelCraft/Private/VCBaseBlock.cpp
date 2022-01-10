@@ -39,6 +39,13 @@ void AVCBaseBlock::OnConstruction(const FTransform& Transform)
 	GridSnapBlock();
 }
 
+float AVCBaseBlock::TakeDamage(float DamageAmount, const FDamageEvent& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	const float ActualDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	HealthComp->HandleTakeDamage(this, ActualDamage, DamageEvent.DamageTypeClass.GetDefaultObject(), EventInstigator, DamageCauser);
+	return ActualDamage;
+}
+
 // FUNCTIONS
 
 FVector AVCBaseBlock::GetCenterOfCube() const
@@ -53,9 +60,3 @@ FVector AVCBaseBlock::GetAttachLocation(const FVector& ClickedLocation, const FV
 }
 
 void AVCBaseBlock::GridSnapBlock() { SetActorLocation(GetActorLocation().GridSnap(BlockSize)); }
-
-void AVCBaseBlock::TakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
-                              AActor* DamageCauser)
-{
-	HealthComp->HandleTakeDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
-}

@@ -7,6 +7,7 @@
 
 UVCHealthComponent::UVCHealthComponent() : DefaultHealth{0.0f}, CurrentHealth{0.0f} { PrimaryComponentTick.bCanEverTick = true; }
 
+
 void UVCHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -28,10 +29,12 @@ void UVCHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 void UVCHealthComponent::HandleTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
                                           AActor* DamageCauser)
 {
+	checkf(FMath::IsNearlyZero(CurrentHealth), TEXT("Why it can TakeDamage while its CurrentHealth is zero"));
+
 	if (Damage <= 0)
 		return;
 
-	CurrentHealth -= Damage;
+	SetCurrentHealth(CurrentHealth - Damage);
 
 	/** Handles calling bound functions. */
 	OnTakeDamage.Broadcast(this, CurrentHealth, InstigatedBy);
