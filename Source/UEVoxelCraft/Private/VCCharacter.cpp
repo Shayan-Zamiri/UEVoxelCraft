@@ -3,7 +3,6 @@
 
 #include "VCCharacter.h"
 
-#include "VCBaseBlock.h"
 #include "VCPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
