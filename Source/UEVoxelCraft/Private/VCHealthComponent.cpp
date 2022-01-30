@@ -5,10 +5,8 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-UVCHealthComponent::UVCHealthComponent() : DefaultHealth{0.0f}, CurrentHealth{0.0f}
-{
-	PrimaryComponentTick.bCanEverTick = true;
-}
+UVCHealthComponent::UVCHealthComponent() : DefaultHealth{0.0f}, CurrentHealth{0.0f} { PrimaryComponentTick.bCanEverTick = true; }
+
 
 void UVCHealthComponent::BeginPlay()
 {
@@ -28,13 +26,33 @@ void UVCHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 // FUNCTIONS
 
-void UVCHealthComponent::HandleTakeDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
+void UVCHealthComponent::HandleTakeDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy,
+                                          AActor* DamageCauser)
 {
+	checkf(FMath::IsNearlyZero(CurrentHealth), TEXT("Why it can TakeDamage while its CurrentHealth is zero"));
+
 	if (Damage <= 0)
 		return;
 
-	CurrentHealth -= Damage;
+	SetCurrentHealth(CurrentHealth - Damage);
 
-	/** Handles calling bound functions. Observer desgin pattern */
+	/** Handles calling bound functions. */
 	OnTakeDamage.Broadcast(this, CurrentHealth, InstigatedBy);
+}
+
+// GETTERS & SETTERS
+
+float UVCHealthComponent::GetCurrentHealth() const { return CurrentHealth; }
+
+void UVCHealthComponent::SetCurrentHealth(float InCurrentHealth)
+{
+	CurrentHealth = FMath::Clamp<float>(InCurrentHealth, 0, DefaultHealth);
+}
+
+float UVCHealthComponent::GetDefaultHealth() const { return DefaultHealth; }
+
+void UVCHealthComponent::SetDefaultHealth(float InDefaultHealth)
+{
+	checkf(InDefaultHealth < 0, TEXT("You were trying to set DefaultHealth less than zero!"));
+	DefaultHealth = InDefaultHealth;
 }
