@@ -25,6 +25,5 @@ public:
 	AVCHUD* GetVCHUD();
 
 	// PROPERTIES
-	UPROPERTY()
 	TWeakObjectPtr<AVCHUD> VCHUD;
 };

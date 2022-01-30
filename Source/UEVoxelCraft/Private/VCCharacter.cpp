@@ -75,8 +75,8 @@ void AVCCharacter::MoveRight(float InVal) { AddMovementInput(GetActorRightVector
 AVCVoxelChunk* AVCCharacter::LineTraceChunk(const FVector& InTargetPoint, FVector& OutLocation, FVector& OutNormal) const
 {
 	FHitResult HitResult;
-	
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraComp->GetComponentLocation(), InTargetPoint,ECC_Visibility))
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraComp->GetComponentLocation(), InTargetPoint, ECC_Visibility))
 	{
 		DrawDebugLine(GetWorld(), CameraComp->GetComponentLocation(), InTargetPoint, FColor::Green, false,
 		              1.0f, 0, 1.0f);

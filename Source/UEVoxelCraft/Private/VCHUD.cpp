@@ -23,12 +23,6 @@ void AVCHUD::DrawHUD()
 	}
 }
 
-float AVCHUD::GetCrosshairX() const
-{
-	return CrosshairX;
-}
+float AVCHUD::GetCrosshairX() const { return CrosshairX; }
 
-float AVCHUD::GetCrosshairY() const
-{
-	return CrosshairY;
-}
+float AVCHUD::GetCrosshairY() const { return CrosshairY; }

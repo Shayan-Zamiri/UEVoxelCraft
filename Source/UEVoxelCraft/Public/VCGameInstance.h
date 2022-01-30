@@ -7,8 +7,6 @@
 #include "Engine/GameInstance.h"
 #include "VCGameInstance.generated.h"
 
-class AVCProceduralGenerator;
-
 UCLASS()
 class UEVOXELCRAFT_API UVCGameInstance : public UGameInstance
 {
@@ -28,6 +26,6 @@ public:
 public:
 	// PROPERTIES
 public:
-	UPROPERTY(EditDefaultsOnly,Category="Properties")
-	TMap<EVCBlockType ,UMaterialInterface*> Materials;
+	UPROPERTY(EditDefaultsOnly, Category="Properties")
+	TMap<EVCBlockType, UMaterialInterface*> Materials;
 };

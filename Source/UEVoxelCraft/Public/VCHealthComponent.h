@@ -29,14 +29,18 @@ public:
 
 	// GETTERS & SETTERS
 public:
+	UFUNCTION(BlueprintGetter)
 	float GetCurrentHealth() const;
 
-	void  SetCurrentHealth(float InCurrentHealth) ;
-	
+	UFUNCTION(BlueprintSetter)
+	void SetCurrentHealth(float InCurrentHealth);
+
+	UFUNCTION(BlueprintGetter)
 	float GetDefaultHealth() const;
 
-	void SetDefaultHealth(float InDefaultHealth) ;
-	
+	UFUNCTION(BlueprintSetter)
+	void SetDefaultHealth(float InDefaultHealth);
+
 	// PROPERTIES
 public:
 	/** Any function that wants to know about the actor being damaged must be bound to this */
@@ -44,9 +48,9 @@ public:
 
 protected:
 	/** Default health used when we want to reset the actor's health or as a base for HUD progress bars */
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Properties")
+	UPROPERTY(EditAnywhere, BlueprintGetter = GetDefaultHealth, BlueprintSetter = SetDefaultHealth, Category= "Properties")
 	float DefaultHealth;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category= "Properties")
+	UPROPERTY(EditAnywhere, BlueprintGetter = GetCurrentHealth, BlueprintSetter = SetCurrentHealth, Category= "Properties")
 	float CurrentHealth;
 };

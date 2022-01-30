@@ -13,8 +13,7 @@ void UVCHealthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	AActor* Owner = GetOwner();
-	if (Owner)
-		Owner->OnTakeAnyDamage.AddDynamic(this, &UVCHealthComponent::HandleTakeDamage);
+	if (Owner) { Owner->OnTakeAnyDamage.AddDynamic(this, &UVCHealthComponent::HandleTakeDamage); }
 
 	CurrentHealth = DefaultHealth;
 }
@@ -31,8 +30,7 @@ void UVCHealthComponent::HandleTakeDamage(AActor* DamagedActor, float Damage, co
 {
 	checkf(FMath::IsNearlyZero(CurrentHealth), TEXT("Why it can TakeDamage while its CurrentHealth is zero"));
 
-	if (Damage <= 0)
-		return;
+	if (Damage <= 0) { return; }
 
 	SetCurrentHealth(CurrentHealth - Damage);
 

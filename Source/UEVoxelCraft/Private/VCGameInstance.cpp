@@ -3,12 +3,12 @@
 
 #include "VCGameInstance.h"
 
-UVCGameInstance::UVCGameInstance(){}
-
-UVCGameInstance::~UVCGameInstance() {}
-
-void UVCGameInstance::OnStart()
+UVCGameInstance::UVCGameInstance()
 {
-	Super::OnStart();
-	
 }
+
+UVCGameInstance::~UVCGameInstance()
+{
+}
+
+void UVCGameInstance::OnStart() { Super::OnStart(); }
