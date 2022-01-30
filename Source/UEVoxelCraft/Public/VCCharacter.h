@@ -5,11 +5,9 @@
 #include "CoreMinimal.h"
 #include "VCTypes.h"
 #include "GameFramework/Character.h"
-#include "UObject/StrongObjectPtr.h"
 #include "VCCharacter.generated.h"
 
 class UCameraComponent;
-class AVCBaseBlock;
 class AVCPlayerController;
 class AVCVoxelChunk;
 
@@ -21,8 +19,6 @@ class AVCCharacter : public ACharacter
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
 	AVCCharacter();
-
-	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
@@ -56,7 +52,6 @@ protected:
 	float BlockSpawnDistance;
 
 private:
-	UPROPERTY()
 	TWeakObjectPtr<AVCPlayerController> VCPlayerController;
 
 	UPROPERTY(EditAnywhere, Category= "Properties|Components")

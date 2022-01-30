@@ -29,8 +29,6 @@ void AVCCharacter::BeginPlay()
 	checkf(VCPlayerController.IsValid(), TEXT("Can't set PlayerController weak reference in the Character"));
 }
 
-void AVCCharacter::Tick(float DeltaTime) { Super::Tick(DeltaTime); }
-
 void AVCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -77,10 +75,8 @@ void AVCCharacter::MoveRight(float InVal) { AddMovementInput(GetActorRightVector
 AVCVoxelChunk* AVCCharacter::LineTraceChunk(const FVector& InTargetPoint, FVector& OutLocation, FVector& OutNormal) const
 {
 	FHitResult HitResult;
-	const bool bDoesHit = GetWorld()->LineTraceSingleByChannel(HitResult, CameraComp->GetComponentLocation(), InTargetPoint,
-	                                                           ECC_Visibility);
-
-	if (bDoesHit)
+	
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, CameraComp->GetComponentLocation(), InTargetPoint,ECC_Visibility))
 	{
 		DrawDebugLine(GetWorld(), CameraComp->GetComponentLocation(), InTargetPoint, FColor::Green, false,
 		              1.0f, 0, 1.0f);
