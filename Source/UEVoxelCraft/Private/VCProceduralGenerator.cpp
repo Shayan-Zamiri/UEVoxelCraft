@@ -2,16 +2,6 @@
 
 #include "VCBaseBlock.h"
 
-// STATICS
-
-TArray<FVCBiomes> UVCProceduralGenerator::Biomes
-{
-	FVCBiomes{EVCBiomeType::Desert, 100, 0},
-	FVCBiomes{EVCBiomeType::Forest, 35, 80},
-	FVCBiomes{EVCBiomeType::Ocean, 25, 50},
-	FVCBiomes{EVCBiomeType::Plain, 40, 40}
-};
-
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
 UVCProceduralGenerator::UVCProceduralGenerator() : MapSize{128}, RandomSeed{0}, Frequency{20.0f}, Amplitude{10.0f}

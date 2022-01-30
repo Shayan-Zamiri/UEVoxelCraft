@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "VCTypes.h"
 #include "Engine/GameInstance.h"
 #include "VCGameInstance.generated.h"
 
@@ -26,10 +27,7 @@ public:
 	// GETTERS & SETTERS
 public:
 	// PROPERTIES
-protected:
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category= "Propeties")
-	TSubclassOf<UVCProceduralGenerator> ProceduralGeneratorClass;
-
-	UPROPERTY()
-	UVCProceduralGenerator* ProceduralGenerator;
+public:
+	UPROPERTY(EditDefaultsOnly,Category="Properties")
+	TMap<EVCBlockType ,UMaterialInterface*> Materials;
 };

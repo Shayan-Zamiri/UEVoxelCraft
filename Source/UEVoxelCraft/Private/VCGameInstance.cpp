@@ -7,20 +7,12 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-UVCGameInstance::UVCGameInstance() : ProceduralGeneratorClass{nullptr}, ProceduralGenerator{nullptr} {}
+UVCGameInstance::UVCGameInstance(){}
 
 UVCGameInstance::~UVCGameInstance() {}
 
 void UVCGameInstance::OnStart()
 {
 	Super::OnStart();
-
-	if (ProceduralGeneratorClass)
-	{
-		ProceduralGenerator = NewObject<UVCProceduralGenerator>(this, ProceduralGeneratorClass);
-		if (ProceduralGenerator)
-		{
-			ProceduralGenerator->Generate();
-		}
-	}
+	
 }

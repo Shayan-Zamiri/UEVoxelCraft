@@ -3,12 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "VCTypes.h"
 #include "GameFramework/Character.h"
+#include "UObject/StrongObjectPtr.h"
 #include "VCCharacter.generated.h"
 
 class UCameraComponent;
 class AVCBaseBlock;
 class AVCPlayerController;
+class AVCVoxelChunk;
 
 UCLASS()
 class AVCCharacter : public ACharacter
@@ -29,7 +32,10 @@ protected:
 	// FUNCTIONS
 private:
 	UFUNCTION()
-	void Action();
+	void AddBlock();
+
+	UFUNCTION()
+	void RemoveBlock();
 
 	UFUNCTION()
 	void MoveForward(float InVal);
@@ -37,18 +43,18 @@ private:
 	UFUNCTION()
 	void MoveRight(float InVal);
 
-	/** returns true if it hits something */
-	bool LineTraceBlock(const FVector& InTargetPoint, FVector& OutLocation, FVector& OutNormal, AVCBaseBlock*& OutHitBlock) const;
+	/** returns nullptr if doesn't hit anything */
+	AVCVoxelChunk* LineTraceChunk(const FVector& InTargetPoint, FVector& OutLocation, FVector& OutNormal) const;
 
 	// PROPERTIES
 protected:
 	/** This is just for test, we will add inventory */
 	UPROPERTY(EditAnywhere, Category= "Properties")
-	TSubclassOf<AVCBaseBlock> BlockClassToSpawn;
+	EVCBlockType BlockToSpawn = EVCBlockType::Dirt;
 
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	float BlockSpawnDistance;
-	
+
 private:
 	UPROPERTY()
 	TWeakObjectPtr<AVCPlayerController> VCPlayerController;

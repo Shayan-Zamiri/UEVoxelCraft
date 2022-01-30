@@ -7,10 +7,11 @@
 #include "VCPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
+#include "VCVoxelChunk.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-AVCCharacter::AVCCharacter() : BlockClassToSpawn{nullptr}, BlockSpawnDistance{300.0f}, VCPlayerController{nullptr}
+AVCCharacter::AVCCharacter() : BlockSpawnDistance{300.0f}, VCPlayerController{nullptr}
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -37,7 +38,8 @@ void AVCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	// Action
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Action", IE_Pressed, this, &AVCCharacter::Action);
+	PlayerInputComponent->BindAction("AddBlock", IE_Pressed, this, &AVCCharacter::AddBlock);
+	PlayerInputComponent->BindAction("RemoveBlock", IE_Pressed, this, &AVCCharacter::RemoveBlock);
 
 	// Axis
 	PlayerInputComponent->BindAxis("MoveForward", this, &AVCCharacter::MoveForward);
@@ -48,17 +50,24 @@ void AVCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 // FUNCTIONS
 
-void AVCCharacter::Action()
+void AVCCharacter::AddBlock()
 {
-	FVector Location{}, Direction{};
+	FVector Location{}, Direction{}, Normal{};
 	VCPlayerController->GetCrosshairLocationAndDirection(Location, Direction);
 	const FVector TargetPoint{Location + BlockSpawnDistance * Direction};
-	FVector Normal{};
-	AVCBaseBlock* HitBlock = nullptr;
-	const bool bDoesHit = LineTraceBlock(TargetPoint, Location, Normal, HitBlock);
-	if (bDoesHit && IsValid(HitBlock))
+	AVCVoxelChunk* Chunk = LineTraceChunk(TargetPoint, Location, Normal);
+	if (IsValid(Chunk)) { Chunk->ModifyChunkMesh(AVCVoxelChunk::WorldLocationToBlockLocalPosition(Location + Normal), BlockToSpawn); }
+}
+
+void AVCCharacter::RemoveBlock()
+{
+	FVector Location{}, Direction{}, Normal{};
+	VCPlayerController->GetCrosshairLocationAndDirection(Location, Direction);
+	const FVector TargetPoint{Location + BlockSpawnDistance * Direction};
+	AVCVoxelChunk* Chunk = LineTraceChunk(TargetPoint, Location, Normal);
+	if (IsValid(Chunk))
 	{
-		GetWorld()->SpawnActor<AVCBaseBlock>(BlockClassToSpawn, AVCBaseBlock::GetAttachLocation(Location, Normal), FRotator{});
+		Chunk->ModifyChunkMesh(AVCVoxelChunk::WorldLocationToBlockLocalPosition(Location - Normal), EVCBlockType::None);
 	}
 }
 
@@ -66,8 +75,7 @@ void AVCCharacter::MoveForward(float InVal) { AddMovementInput(GetActorForwardVe
 
 void AVCCharacter::MoveRight(float InVal) { AddMovementInput(GetActorRightVector(), InVal); }
 
-bool AVCCharacter::LineTraceBlock(const FVector& InTargetPoint, FVector& OutLocation, FVector& OutNormal,
-                                  AVCBaseBlock*& OutHitBlock) const
+AVCVoxelChunk* AVCCharacter::LineTraceChunk(const FVector& InTargetPoint, FVector& OutLocation, FVector& OutNormal) const
 {
 	FHitResult HitResult;
 	const bool bDoesHit = GetWorld()->LineTraceSingleByChannel(HitResult, CameraComp->GetComponentLocation(), InTargetPoint,
@@ -82,15 +90,10 @@ bool AVCCharacter::LineTraceBlock(const FVector& InTargetPoint, FVector& OutLoca
 	{
 		DrawDebugLine(GetWorld(), CameraComp->GetComponentLocation(), InTargetPoint, FColor::Red, false,
 		              1.0f, 0, 1.0f);
-		return false;
 	}
 
 	OutLocation = HitResult.Location;
 	OutNormal = HitResult.Normal;
-	OutHitBlock = Cast<AVCBaseBlock>(HitResult.Actor.Get());
 
-	if (!OutHitBlock)
-		return false;
-
-	return true;
+	return Cast<AVCVoxelChunk>(HitResult.Actor);
 }

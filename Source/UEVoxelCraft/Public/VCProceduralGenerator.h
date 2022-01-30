@@ -22,9 +22,6 @@ public:
 	// GETTERS & SETTERS
 public:
 	// PROPERTIES
-public:
-	static TArray<FVCBiomes> Biomes;
-
 protected:
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category= "Properties")
