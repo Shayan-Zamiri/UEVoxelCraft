@@ -13,12 +13,15 @@ class UEVOXELCRAFT_API AVCVoxelWorld : public AActor
 {
 	GENERATED_BODY()
 
+	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
 	AVCVoxelWorld();
 
 protected:
 	virtual void BeginPlay() override;
 
+	// PROPERTIES
+protected:
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	int32 DrawDistance;
 

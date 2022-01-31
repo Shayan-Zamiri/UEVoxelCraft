@@ -26,15 +26,15 @@ protected:
 
 	// FUNCTIONS
 public:
-	static int32 GetBlockIndex(int32 X, int32 Y, int32 Z);
+	static int32 GetBlockIndex(const int32 X, const int32 Y, const int32 Z);
 
-	static FVector GetPositionInDirection(FVector InPosition, EVCDirection InDirection);
+	static FVector GetPositionInDirection(const FVector& InPosition, const EVCDirection InDirection);
 
-	static FIntVector WorldLocationToBlockPosition(const FVector& WorldLocation);
+	static FIntVector WorldLocationToBlockPosition(const FVector& InWorldLocation);
 
-	static FIntVector WorldLocationToBlockLocalPosition(const FVector& WorldLocation);
+	static FIntVector WorldLocationToBlockLocalPosition(const FVector& InWorldLocation);
 
-	static FIntVector WorldLocationToChunkPosition(const FVector& WorldLocation);
+	static FIntVector WorldLocationToChunkPosition(const FVector& InWorldLocation);
 
 	void RuntimeMeshSetup();
 
@@ -50,19 +50,20 @@ public:
 
 	void ClearMesh();
 
-	void CreateFace(FVector Position, EVCDirection Direction, EVCBlockType Block);
+	void CreateFace(const FVector& InPosition, EVCDirection InDirection, const EVCBlockType InBlock);
 
-	void AddVertices(FVector Position, EVCDirection Direction, EVCBlockType Block);
+	void AddVertices(const FVector& InPosition, EVCDirection InDirection, const EVCBlockType InBlock);
 
-	void AddIndices(EVCBlockType Block);
+	void AddIndices(const EVCBlockType InBlock);
 
-	void AddUVs(EVCBlockType Block);
+	void AddUVs(const EVCBlockType InBlock);
 
-	bool CheckNone(FVector Position);
+	/** Checks whether or not the block in the specified position is of type EVCBlockType::None */
+	bool CheckNone(const FVector& InPosition);
 
-	UMaterialInterface* GetMaterialInterfaceFromBlock(EVCBlockType Block) const;
+	UMaterialInterface* GetMaterialInterfaceFromBlock(const EVCBlockType InBlock) const;
 
-	void ModifyChunkMesh(const FIntVector& Position, const EVCBlockType Block);
+	void ModifyChunkMesh(const FIntVector& InPosition, const EVCBlockType InBlock);
 
 	// GETTERS & SETTERS
 public:
