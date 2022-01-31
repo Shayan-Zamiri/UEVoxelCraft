@@ -20,6 +20,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
+	// FUNCTIONS
+	void CullChunks();
+
+	bool IsInRadius(const FVector& InCoords) const;
+	
+	bool IsInRadius(const AVCVoxelChunk& InChunk) const;
+
 	// PROPERTIES
 protected:
 	UPROPERTY(EditAnywhere, Category= "Properties")
@@ -27,4 +36,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	TSubclassOf<AVCVoxelChunk> VoxelChunkClass;
+	
+	TArray<AVCVoxelChunk*> Chunks;
 };
