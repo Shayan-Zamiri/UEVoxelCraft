@@ -7,7 +7,7 @@
 #include "VCVoxelChunk.generated.h"
 
 class URuntimeMeshComponent;
-class URuntimeMeshProvider;
+class URuntimeMeshProviderStatic;
 class FastNoiseLite;
 
 UCLASS()
@@ -35,6 +35,8 @@ public:
 	static FIntVector WorldLocationToBlockLocalPosition(const FVector& WorldLocation);
 
 	static FIntVector WorldLocationToChunkPosition(const FVector& WorldLocation);
+
+	void RuntimeMeshSetup();
 
 	void NoiseSetup();
 
@@ -86,11 +88,11 @@ protected:
 	UPROPERTY(VisibleInstanceOnly, Category= "Properties")
 	TSet<EVCBlockType> BlockVariety;
 
-	UPROPERTY(VisibleInstanceOnly, Category= "Properties")
-	TMap<EVCBlockType, uint32> VertexCounts;
-
 	UPROPERTY()
 	URuntimeMeshComponent* RMComp;
+
+	UPROPERTY()
+	URuntimeMeshProviderStatic* RMProviderStatic;
 
 private:
 	TMap<EVCBlockType, FVCChunkMeshData> MeshData;

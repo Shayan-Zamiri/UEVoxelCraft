@@ -40,21 +40,21 @@ FVector AVCVoxelChunk::GetPositionInDirection(FVector InPosition, EVCDirection I
 {
 	switch (InDirection)
 	{
-	case EVCDirection::Forward:
-		return InPosition + FVector::ForwardVector;
-	case EVCDirection::Right:
-		return InPosition + FVector::RightVector;
-	case EVCDirection::Back:
-		return InPosition + FVector::BackwardVector;
-	case EVCDirection::Left:
-		return InPosition + FVector::LeftVector;
-	case EVCDirection::Up:
-		return InPosition + FVector::UpVector;
-	case EVCDirection::Down:
-		return InPosition + FVector::DownVector;
-	default:
-		UE_LOG(LogTemp, Fatal, TEXT("Invalid Direction")); // crashes the session
-		return FVector{}; // written to ignore IDE warning
+		case EVCDirection::Forward:
+			return InPosition + FVector::ForwardVector;
+		case EVCDirection::Right:
+			return InPosition + FVector::RightVector;
+		case EVCDirection::Back:
+			return InPosition + FVector::BackwardVector;
+		case EVCDirection::Left:
+			return InPosition + FVector::LeftVector;
+		case EVCDirection::Up:
+			return InPosition + FVector::UpVector;
+		case EVCDirection::Down:
+			return InPosition + FVector::DownVector;
+		default:
+			UE_LOG(LogTemp, Fatal, TEXT("Invalid Direction")); // crashes the session
+			return FVector{}; // written to ignore IDE warning
 	}
 }
 
@@ -104,6 +104,8 @@ void AVCVoxelChunk::BeginPlay()
 {
 	Super::BeginPlay();
 
+	RuntimeMeshSetup();
+
 	NoiseSetup();
 
 	SetupBlockVariety();
@@ -117,6 +119,13 @@ void AVCVoxelChunk::BeginPlay()
 
 // FUNCTIONS
 
+void AVCVoxelChunk::RuntimeMeshSetup()
+{
+	RMProviderStatic = NewObject<URuntimeMeshProviderStatic>(this,TEXT("RunetimeMeshProviderStatic"));
+	checkf(RMProviderStatic, TEXT("Unable to intialize RuntimeMeshProviderStatic"));
+	RMComp->Initialize(RMProviderStatic);
+}
+
 void AVCVoxelChunk::NoiseSetup()
 {
 	Noise->SetFrequency(Frequency);
@@ -127,13 +136,11 @@ void AVCVoxelChunk::NoiseSetup()
 void AVCVoxelChunk::SetupBlockVariety()
 {
 	UVCGameInstance* GameInstance = Cast<UVCGameInstance>(GetGameInstance());
-	if (!GameInstance)
-		return;
+	checkf(GameInstance, TEXT("Unable to get VCGameInstance. Check Project Settings/Maps & Modes/Game Instance Class"));
 
 	for (const auto& It : GameInstance->Materials)
 	{
 		BlockVariety.Add(It.Key);
-		VertexCounts.Add(It.Key);
 		MeshData.Add(It.Key);
 	}
 }
@@ -154,8 +161,6 @@ void AVCVoxelChunk::GenerateChunk()
 			for (int32 z = 0; z < Height / 2; z++) { Blocks[GetBlockIndex(x, y, z)] = EVCBlockType::Dirt; }
 
 			for (int32 z = Height / 2; z < Height; z++) { Blocks[GetBlockIndex(x, y, z)] = EVCBlockType::Stone; }
-
-			for (int32 z = Height; z < ChunkSize; z++) { Blocks[GetBlockIndex(x, y, z)] = EVCBlockType::None; }
 		}
 	}
 }
@@ -191,27 +196,21 @@ void AVCVoxelChunk::GenerateMesh()
 
 void AVCVoxelChunk::ApplyMesh()
 {
-	URuntimeMeshProviderStatic* RMProviderStatic = NewObject<URuntimeMeshProviderStatic>(
-		this,TEXT("RunetimeMeshProviderStatic"));
-	if (RMProviderStatic)
+	for (auto It : BlockVariety)
 	{
-		RMComp->Initialize(RMProviderStatic);
-		for (auto It : BlockVariety)
-		{
-			const uint8 Block = static_cast<uint8>(It);
-			RMProviderStatic->SetupMaterialSlot(Block, EnumToName(It), GetMaterialInterfaceFromBlock(It));
-			RMProviderStatic->CreateSectionFromComponents(0,
-			                                              Block,
-			                                              Block,
-			                                              MeshData.FindChecked(It).Vertices,
-			                                              MeshData.FindChecked(It).Indices,
-			                                              TArray<FVector>{},
-			                                              MeshData.FindChecked(It).UV,
-			                                              TArray<FColor>{},
-			                                              TArray<FRuntimeMeshTangent>{},
-			                                              ERuntimeMeshUpdateFrequency::Infrequent,
-			                                              true);
-		}
+		const uint8 Block = static_cast<uint8>(It);
+		RMProviderStatic->SetupMaterialSlot(Block, EnumToName(It), GetMaterialInterfaceFromBlock(It));
+		RMProviderStatic->CreateSectionFromComponents(0,
+		                                              Block,
+		                                              Block,
+		                                              MeshData.FindChecked(It).Vertices,
+		                                              MeshData.FindChecked(It).Indices,
+		                                              TArray<FVector>{},
+		                                              MeshData.FindChecked(It).UV,
+		                                              TArray<FColor>{},
+		                                              TArray<FRuntimeMeshTangent>{},
+		                                              ERuntimeMeshUpdateFrequency::Infrequent,
+		                                              true);
 	}
 }
 
@@ -220,7 +219,6 @@ void AVCVoxelChunk::ClearMesh()
 	for (const auto It : BlockVariety)
 	{
 		MeshData.FindChecked(It).Clear();
-		VertexCounts.FindChecked(It) = 0;
 	}
 }
 
@@ -237,44 +235,50 @@ void AVCVoxelChunk::AddVertices(FVector Position, EVCDirection Direction, EVCBlo
 	{
 		MeshData.FindChecked(Block).Vertices.
 		         Add(BlockVerticesData[BlockIndicesData[i + 4 * static_cast<int32>(Direction)]] + Position);
-		VertexCounts.FindChecked(Block)++;
 	}
+	MeshData.FindChecked(Block).VertexCount += 4;
 }
 
 void AVCVoxelChunk::AddUVs(EVCBlockType Block)
 {
-	MeshData.FindChecked(Block).UV.Add(FVector2D{0.0f, 0.0f});
-	MeshData.FindChecked(Block).UV.Add(FVector2D{1.0f, 0.0f});
-	MeshData.FindChecked(Block).UV.Add(FVector2D{1.0f, 1.0f});
-	MeshData.FindChecked(Block).UV.Add(FVector2D{0.0f, 1.0f});
+	MeshData.FindChecked(Block).UV.Append(
+	{
+		FVector2D{0.0f, 0.0f},
+		FVector2D{1.0f, 0.0f},
+		FVector2D{1.0f, 1.0f},
+		FVector2D{0.0f, 1.0f}
+	});
 }
 
 void AVCVoxelChunk::AddIndices(EVCBlockType Block)
 {
-	const uint32 VertexCount = VertexCounts.FindChecked(Block);
-	MeshData.FindChecked(Block).Indices.Add(VertexCount + 3); //TODO : get them once and then use
-	MeshData.FindChecked(Block).Indices.Add(VertexCount + 2);
-	MeshData.FindChecked(Block).Indices.Add(VertexCount);
-	MeshData.FindChecked(Block).Indices.Add(VertexCount + 2);
-	MeshData.FindChecked(Block).Indices.Add(VertexCount + 1);
-	MeshData.FindChecked(Block).Indices.Add(VertexCount);
+	const int32 VertexCount = MeshData.FindChecked(Block).VertexCount;
+
+	MeshData.FindChecked(Block).Indices.Append(
+		{
+			VertexCount + 3,
+			VertexCount + 2,
+			VertexCount,
+			VertexCount + 2,
+			VertexCount + 1,
+			VertexCount
+		}
+		);
 }
 
 bool AVCVoxelChunk::CheckNone(FVector Position)
 {
 	if (Position.X >= ChunkSize || Position.Y >= ChunkSize || Position.Z >= ChunkSize || Position.X < 0.0f || Position.Y < 0.0f ||
-		Position.Z < 0.0f)
-		return true;
+		Position.Z < 0.0f) { return true; }
 
 	return Blocks[GetBlockIndex(static_cast<int32>(Position.X), static_cast<int32>(Position.Y)
-	                            , static_cast<int32>(Position.Z))] == EVCBlockType::None;
+	                          , static_cast<int32>(Position.Z))] == EVCBlockType::None;
 }
 
 UMaterialInterface* AVCVoxelChunk::GetMaterialInterfaceFromBlock(EVCBlockType Block) const
 {
 	UVCGameInstance* GameInstance = Cast<UVCGameInstance>(GetGameInstance());
-	if (!GameInstance)
-		return nullptr;
+	checkf(GameInstance, TEXT("Unable to get VCGameInstance. Check Project Settings/Maps & Modes/Game Instance Class"));
 
 	return GameInstance->Materials.FindChecked(Block);
 }
@@ -283,7 +287,9 @@ void AVCVoxelChunk::ModifyChunkMesh(const FIntVector& Position, const EVCBlockTy
 {
 	if (Position.X >= BlockSize || Position.Y >= BlockSize || Position.Z >= BlockSize || Position.X < 0 || Position.Y < 0 || Position.Z
 		< 0 || (!BlockVariety.Contains(Block) && Block != EVCBlockType::None)) //TODO: adding different blocks
+	{
 		return;
+	}
 
 	const int32 Index = GetBlockIndex(Position.X, Position.Y, Position.Z);
 	Blocks[Index] = Block;

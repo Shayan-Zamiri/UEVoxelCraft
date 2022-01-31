@@ -90,12 +90,15 @@ struct FVCChunkMeshData
 		Indices.Empty();
 		Normals.Empty();
 		UV.Empty();
+		VertexCount = 0;
 	}
 
 	TArray<FVector> Vertices;
 	TArray<int32> Indices;
 	TArray<FVector> Normals;
 	TArray<FVector2D> UV;
+
+	int32 VertexCount;
 };
 
 // DELEGATES
