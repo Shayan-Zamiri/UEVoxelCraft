@@ -23,10 +23,19 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 	// FUNCTIONS
+private:
+	/** Spawns chunks around the specified position */
+	void GenerateChunks(const FVector& InPosition);
+
 	void CullChunks();
 
+	void AddChunks();
+
+	/** Calculates player position in a chunk scale */
+	FVector GetPlayerPositionInChunkBasis() const;
+
 	bool IsInRadius(const FVector& InCoords) const;
-	
+
 	bool IsInRadius(const AVCVoxelChunk& InChunk) const;
 
 	// PROPERTIES
@@ -36,6 +45,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	TSubclassOf<AVCVoxelChunk> VoxelChunkClass;
-	
+
 	TArray<AVCVoxelChunk*> Chunks;
+
+	TArray<FVector> ChunkCoords;
 };
