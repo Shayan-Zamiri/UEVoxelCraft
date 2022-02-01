@@ -31,7 +31,7 @@ void AVCVoxelWorld::Tick(float DeltaSeconds)
 
 	CullChunks();
 
-	// AddChunks();
+	AddChunks();
 }
 
 // FUNCTIONS
@@ -42,16 +42,20 @@ void AVCVoxelWorld::GenerateChunks(const FVector& InPosition)
 	{
 		for (int y = -DrawDistance; y <= DrawDistance; y++)
 		{
-			if (IsInRadius(FVector{(x + InPosition.X), (y + InPosition.Y), 0.0f}))
+			FVector Position{FVector{(x + InPosition.X), (y + InPosition.Y), 0.0f}};
+			if (IsInRadius(Position))
 			{
-				AVCVoxelChunk* Chunk = Cast<AVCVoxelChunk>(GetWorld()->SpawnActor<AActor>(
-					VoxelChunkClass, FVector((InPosition.X + x) * ChunkSize * BlockSize,
-					                         (InPosition.Y + y) * ChunkSize * BlockSize, 0),
-					FRotator::ZeroRotator));
-				checkf(Chunk, TEXT("Something went wrong creating chunk %d %d"), x, y);
+				if (!ChunkCoords.Contains(Position))
+				{
+					AVCVoxelChunk* Chunk = Cast<AVCVoxelChunk>(GetWorld()->SpawnActor<AActor>(
+						VoxelChunkClass, FVector((InPosition.X + x) * ChunkSize * BlockSize,
+												 (InPosition.Y + y) * ChunkSize * BlockSize, 0),
+						FRotator::ZeroRotator));
+					checkf(Chunk, TEXT("Something went wrong creating chunk %d %d"), x, y);
 
-				Chunks.Add(Chunk);
-				ChunkCoords.Add(FVector{(x + InPosition.X), (y + InPosition.Y), 0.0f});
+					Chunks.Add(Chunk);
+					ChunkCoords.Add(Position);
+				}
 			}
 		}
 	}
@@ -71,7 +75,8 @@ void AVCVoxelWorld::CullChunks()
 }
 
 void AVCVoxelWorld::AddChunks()
-{
+{	
+	GenerateChunks(GetPlayerPositionInChunkBasis());
 }
 
 FVector AVCVoxelWorld::GetPlayerPositionInChunkBasis() const
