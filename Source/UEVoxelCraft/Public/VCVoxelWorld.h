@@ -26,7 +26,7 @@ protected:
 	// FUNCTIONS
 private:
 	/** Spawns chunks around the specified position */
-	void GenerateChunks(const FVector& InPosition);
+	void GenerateChunks(const FVector& Position);
 
 	void CullChunks();
 
@@ -35,9 +35,9 @@ private:
 	/** Calculates player position in a chunk scale */
 	FVector GetPlayerPositionInChunkBasis() const;
 
-	bool IsInRadius(const FVector& InCoords) const;
+	bool IsInRadius(const FVector& Coords) const;
 
-	bool IsInRadius(const AVCVoxelChunk& InChunk) const;
+	bool IsInRadius(const AVCVoxelChunk& Chunk) const;
 
 	// PROPERTIES
 protected:

@@ -39,50 +39,50 @@ int32 AVCVoxelChunk::GetBlockIndex(const int32 X, const int32 Y, const int32 Z)
 	return X * ChunkSize * ChunkSize + Y * ChunkSize + Z;
 }
 
-FVector AVCVoxelChunk::GetPositionInDirection(const FVector& InPosition, const EVCDirection InDirection)
+FVector AVCVoxelChunk::GetPositionInDirection(const FVector& Position, const EVCDirection Direction)
 {
-	switch (InDirection)
+	switch (Direction)
 	{
 		case EVCDirection::Forward:
-			return InPosition + FVector::ForwardVector;
+			return Position + FVector::ForwardVector;
 		case EVCDirection::Right:
-			return InPosition + FVector::RightVector;
+			return Position + FVector::RightVector;
 		case EVCDirection::Back:
-			return InPosition + FVector::BackwardVector;
+			return Position + FVector::BackwardVector;
 		case EVCDirection::Left:
-			return InPosition + FVector::LeftVector;
+			return Position + FVector::LeftVector;
 		case EVCDirection::Up:
-			return InPosition + FVector::UpVector;
+			return Position + FVector::UpVector;
 		case EVCDirection::Down:
-			return InPosition + FVector::DownVector;
+			return Position + FVector::DownVector;
 		default:
 			UE_LOG(LogTemp, Fatal, TEXT("Invalid Direction")); // crashes the session
 			return FVector{}; // written to ignore IDE warning
 	}
 }
 
-FIntVector AVCVoxelChunk::WorldLocationToBlockPosition(const FVector& InWorldLocation)
+FIntVector AVCVoxelChunk::WorldLocationToBlockPosition(const FVector& WorldLocation)
 {
 	FIntVector Position{};
-	Position.X = FMath::FloorToInt(InWorldLocation.X / BlockSize);
-	Position.Y = FMath::FloorToInt(InWorldLocation.Y / BlockSize);
-	Position.Z = FMath::FloorToInt(InWorldLocation.Z / BlockSize);
+	Position.X = FMath::FloorToInt(WorldLocation.X / BlockSize);
+	Position.Y = FMath::FloorToInt(WorldLocation.Y / BlockSize);
+	Position.Z = FMath::FloorToInt(WorldLocation.Z / BlockSize);
 	return Position;
 }
 
-FIntVector AVCVoxelChunk::WorldLocationToBlockLocalPosition(const FVector& InWorldLocation)
+FIntVector AVCVoxelChunk::WorldLocationToBlockLocalPosition(const FVector& WorldLocation)
 {
-	const FIntVector ChunkPosition = WorldLocationToChunkPosition(InWorldLocation);
-	const FIntVector BlockPosition = WorldLocationToBlockPosition(InWorldLocation);
+	const FIntVector ChunkPosition = WorldLocationToChunkPosition(WorldLocation);
+	const FIntVector BlockPosition = WorldLocationToBlockPosition(WorldLocation);
 	return BlockPosition - ChunkPosition * ChunkSize;
 }
 
-FIntVector AVCVoxelChunk::WorldLocationToChunkPosition(const FVector& InWorldLocation)
+FIntVector AVCVoxelChunk::WorldLocationToChunkPosition(const FVector& WorldLocation)
 {
 	FIntVector Position{};
-	Position.X = FMath::FloorToInt(InWorldLocation.X / (ChunkSize * BlockSize));
-	Position.Y = FMath::FloorToInt(InWorldLocation.Y / (ChunkSize * BlockSize));
-	Position.Z = FMath::FloorToInt(InWorldLocation.Z / (ChunkSize * BlockSize));
+	Position.X = FMath::FloorToInt(WorldLocation.X / (ChunkSize * BlockSize));
+	Position.Y = FMath::FloorToInt(WorldLocation.Y / (ChunkSize * BlockSize));
+	Position.Z = FMath::FloorToInt(WorldLocation.Z / (ChunkSize * BlockSize));
 	return Position;
 }
 
@@ -162,9 +162,15 @@ void AVCVoxelChunk::GenerateChunk()
 			const int Height = FMath::Clamp(FMath::RoundToInt(((Noise->GetNoise(XPos, YPos) + 1) / 2 * ChunkSize) * Amplitude), 1,
 			                                ChunkSize);
 
-			for (int32 z = 0; z < Height / 2; z++) { Blocks[GetBlockIndex(x, y, z)] = EVCBlockType::Dirt; }
+			for (int32 z = 0; z < Height / 2; z++)
+			{
+				Blocks[GetBlockIndex(x, y, z)] = EVCBlockType::Dirt;
+			}
 
-			for (int32 z = Height / 2; z < Height; z++) { Blocks[GetBlockIndex(x, y, z)] = EVCBlockType::Stone; }
+			for (int32 z = Height / 2; z < Height; z++)
+			{
+				Blocks[GetBlockIndex(x, y, z)] = EVCBlockType::Stone;
+			}
 		}
 	}
 }
@@ -226,26 +232,26 @@ void AVCVoxelChunk::ClearMesh()
 	}
 }
 
-void AVCVoxelChunk::CreateFace(const FVector& InPosition, EVCDirection InDirection, const EVCBlockType InBlock)
+void AVCVoxelChunk::CreateFace(const FVector& Position, const EVCDirection Direction, const EVCBlockType Block)
 {
-	AddIndices(InBlock);
-	AddVertices(InPosition, InDirection, InBlock);
-	AddUVs(InBlock);
+	AddIndices(Block);
+	AddVertices(Position, Direction, Block);
+	AddUVs(Block);
 }
 
-void AVCVoxelChunk::AddVertices(const FVector& InPosition, EVCDirection InDirection, const EVCBlockType InBlock)
+void AVCVoxelChunk::AddVertices(const FVector& Position, const EVCDirection Direction, const EVCBlockType Block)
 {
+	const int32 IntDirection = static_cast<int32>(Direction);
 	for (int32 i = 0; i < 4; i++)
 	{
-		MeshData.FindChecked(InBlock).Vertices.
-		         Add(BlockVerticesData[BlockIndicesData[i + 4 * static_cast<int32>(InDirection)]] + InPosition);
+		MeshData.FindChecked(Block).Vertices.Add(BlockVerticesData[BlockIndicesData[i + 4 * IntDirection]] + Position);
 	}
-	MeshData.FindChecked(InBlock).VertexCount += 4;
+	MeshData.FindChecked(Block).VertexCount += 4;
 }
 
-void AVCVoxelChunk::AddUVs(const EVCBlockType InBlock)
+void AVCVoxelChunk::AddUVs(const EVCBlockType Block)
 {
-	MeshData.FindChecked(InBlock).UV.Append(
+	MeshData.FindChecked(Block).UV.Append(
 	{
 		FVector2D{0.0f, 0.0f},
 		FVector2D{1.0f, 0.0f},
@@ -254,11 +260,11 @@ void AVCVoxelChunk::AddUVs(const EVCBlockType InBlock)
 	});
 }
 
-void AVCVoxelChunk::AddIndices(const EVCBlockType InBlock)
+void AVCVoxelChunk::AddIndices(const EVCBlockType Block)
 {
-	const int32 VertexCount = MeshData.FindChecked(InBlock).VertexCount;
+	const int32 VertexCount = MeshData.FindChecked(Block).VertexCount;
 
-	MeshData.FindChecked(InBlock).Indices.Append(
+	MeshData.FindChecked(Block).Indices.Append(
 		{
 			VertexCount + 3,
 			VertexCount + 2,
@@ -270,35 +276,36 @@ void AVCVoxelChunk::AddIndices(const EVCBlockType InBlock)
 		);
 }
 
-bool AVCVoxelChunk::CheckNone(const FVector& InPosition)
+bool AVCVoxelChunk::CheckNone(const FVector& Position)
 {
-	if (InPosition.X >= ChunkSize || InPosition.Y >= ChunkSize || InPosition.Z >= ChunkSize || InPosition.X < 0.0f || InPosition.Y <
-		0.0f ||
-		InPosition.Z < 0.0f) { return true; }
+	if (Position.X >= ChunkSize || Position.Y >= ChunkSize || Position.Z >= ChunkSize || Position.X < 0.0f || Position.Y < 0.0f || Position.
+		Z < 0.0f)
+	{
+		return true;
+	}
 
-	return Blocks[GetBlockIndex(static_cast<int32>(InPosition.X), static_cast<int32>(InPosition.Y)
-	                          , static_cast<int32>(InPosition.Z))] == EVCBlockType::None;
+	return Blocks[GetBlockIndex(static_cast<int32>(Position.X), static_cast<int32>(Position.Y), static_cast<int32>(Position.Z))] ==
+		EVCBlockType::None;
 }
 
-UMaterialInterface* AVCVoxelChunk::GetMaterialInterfaceFromBlock(const EVCBlockType InBlock) const
+UMaterialInterface* AVCVoxelChunk::GetMaterialInterfaceFromBlock(const EVCBlockType Block) const
 {
 	UVCGameInstance* GameInstance = Cast<UVCGameInstance>(GetGameInstance());
 	checkf(GameInstance, TEXT("Unable to get VCGameInstance. Check Project Settings/Maps & Modes/Game Instance Class"));
 
-	return GameInstance->Materials.FindChecked(InBlock);
+	return GameInstance->Materials.FindChecked(Block);
 }
 
-void AVCVoxelChunk::ModifyChunkMesh(const FIntVector& InPosition, const EVCBlockType InBlock)
+void AVCVoxelChunk::ModifyChunkMesh(const FIntVector& Position, const EVCBlockType Block)
 {
-	if (InPosition.X >= BlockSize || InPosition.Y >= BlockSize || InPosition.Z >= BlockSize || InPosition.X < 0 || InPosition.Y < 0 ||
-		InPosition.Z
-		< 0 || (!BlockVariety.Contains(InBlock) && InBlock != EVCBlockType::None)) //TODO: adding different blocks
+	if (Position.X >= BlockSize || Position.Y >= BlockSize || Position.Z >= BlockSize || Position.X < 0 || Position.Y < 0 || Position.Z < 0
+		|| (!BlockVariety.Contains(Block) && Block != EVCBlockType::None)) //TODO: adding different blocks
 	{
 		return;
 	}
 
-	const int32 Index = GetBlockIndex(InPosition.X, InPosition.Y, InPosition.Z);
-	Blocks[Index] = InBlock;
+	const int32 Index = GetBlockIndex(Position.X, Position.Y, Position.Z);
+	Blocks[Index] = Block;
 
 	ClearMesh();
 

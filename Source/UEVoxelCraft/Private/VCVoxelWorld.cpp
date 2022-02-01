@@ -39,25 +39,23 @@ void AVCVoxelWorld::Tick(float DeltaSeconds)
 
 // FUNCTIONS
 
-void AVCVoxelWorld::GenerateChunks(const FVector& InPosition)
+void AVCVoxelWorld::GenerateChunks(const FVector& Position)
 {
 	for (int x = -DrawDistance; x <= DrawDistance; x++)
 	{
 		for (int y = -DrawDistance; y <= DrawDistance; y++)
 		{
-			FVector Position{FVector{(x + InPosition.X), (y + InPosition.Y), 0.0f}};
-			if (IsInRadius(Position))
+			FVector ChunkPosition{FVector{(x + Position.X), (y + Position.Y), 0.0f}};
+			if (IsInRadius(ChunkPosition))
 			{
-				if (!ChunkCoords.Contains(Position))
+				if (!ChunkCoords.Contains(ChunkPosition))
 				{
-					AVCVoxelChunk* Chunk = Cast<AVCVoxelChunk>(GetWorld()->SpawnActor<AActor>(
-						VoxelChunkClass, FVector((InPosition.X + x) * ChunkSize * BlockSize,
-						                         (InPosition.Y + y) * ChunkSize * BlockSize, 0),
-						FRotator::ZeroRotator));
+					AVCVoxelChunk* Chunk = Cast<AVCVoxelChunk>(
+						GetWorld()->SpawnActor<AActor>(VoxelChunkClass, ChunkPosition * ChunkSize * BlockSize, FRotator::ZeroRotator));
 					checkf(Chunk, TEXT("Something went wrong creating chunk %d %d"), x, y);
 
 					Chunks.Add(Chunk);
-					ChunkCoords.Add(Position);
+					ChunkCoords.Add(ChunkPosition);
 				}
 			}
 		}
@@ -77,7 +75,10 @@ void AVCVoxelWorld::CullChunks()
 	}
 }
 
-void AVCVoxelWorld::AddChunks() { GenerateChunks(GetPlayerPositionInChunkBasis()); }
+void AVCVoxelWorld::AddChunks()
+{
+	GenerateChunks(GetPlayerPositionInChunkBasis());
+}
 
 FVector AVCVoxelWorld::GetPlayerPositionInChunkBasis() const
 {
@@ -86,21 +87,24 @@ FVector AVCVoxelWorld::GetPlayerPositionInChunkBasis() const
 	return FVector{PositionX, PositionY, 0.0f};
 }
 
-bool AVCVoxelWorld::IsInRadius(const FVector& InCoords) const
+bool AVCVoxelWorld::IsInRadius(const FVector& Coords) const
 {
 	const FVector PlayerPosition = GetPlayerPositionInChunkBasis();
 
 	const FVector BasisVector{static_cast<float>(DrawDistance), static_cast<float>(DrawDistance), 0.0f};
 
-	if ((InCoords - PlayerPosition).Size() < BasisVector.Size()) { return true; }
+	if ((Coords - PlayerPosition).Size() < BasisVector.Size())
+	{
+		return true;
+	}
 	return false;
 }
 
-bool AVCVoxelWorld::IsInRadius(const AVCVoxelChunk& InChunk) const
+bool AVCVoxelWorld::IsInRadius(const AVCVoxelChunk& Chunk) const
 {
 	FVector Coords;
-	Coords.X = FMath::FloorToInt(InChunk.GetActorLocation().X / (ChunkSize * BlockSize));
-	Coords.Y = FMath::FloorToInt(InChunk.GetActorLocation().Y / (ChunkSize * BlockSize));
+	Coords.X = FMath::FloorToInt(Chunk.GetActorLocation().X / (ChunkSize * BlockSize));
+	Coords.Y = FMath::FloorToInt(Chunk.GetActorLocation().Y / (ChunkSize * BlockSize));
 	Coords.Z = 0.0f;
 	return IsInRadius(Coords);
 }
