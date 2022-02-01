@@ -88,7 +88,7 @@ FIntVector AVCVoxelChunk::WorldLocationToChunkPosition(const FVector& InWorldLoc
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-AVCVoxelChunk::AVCVoxelChunk() : Frequency{0.05f}, NoiseType{VCNoiseType::NoiseType_Perlin},
+AVCVoxelChunk::AVCVoxelChunk() : Frequency{0.05f}, Amplitude{1.0f}, NoiseType{VCNoiseType::NoiseType_Perlin},
                                  FractalType{VCFractalType::FractalType_FBm}
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -159,7 +159,8 @@ void AVCVoxelChunk::GenerateChunk()
 			const float XPos = x + Location.X / BlockSize;
 			const float YPos = y + Location.Y / BlockSize;
 
-			const int Height = FMath::Clamp(FMath::RoundToInt((Noise->GetNoise(XPos, YPos) + 1) / 2 * ChunkSize), 1, ChunkSize);
+			const int Height = FMath::Clamp(FMath::RoundToInt(((Noise->GetNoise(XPos, YPos) + 1) / 2 * ChunkSize) * Amplitude), 1,
+			                                ChunkSize);
 
 			for (int32 z = 0; z < Height / 2; z++) { Blocks[GetBlockIndex(x, y, z)] = EVCBlockType::Dirt; }
 

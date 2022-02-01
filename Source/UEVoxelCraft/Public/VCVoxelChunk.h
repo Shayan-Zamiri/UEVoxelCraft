@@ -78,6 +78,9 @@ protected:
 	float Frequency;
 
 	UPROPERTY(EditAnywhere, Category="Properties")
+	float Amplitude;
+
+	UPROPERTY(EditAnywhere, Category="Properties")
 	VCNoiseType NoiseType;
 
 	UPROPERTY(EditAnywhere, Category="Properties")
