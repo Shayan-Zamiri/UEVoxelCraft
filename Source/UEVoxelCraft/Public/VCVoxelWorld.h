@@ -7,6 +7,7 @@
 #include "VCVoxelWorld.generated.h"
 
 class AVCVoxelChunk;
+class AVCCharacter;
 
 UCLASS()
 class UEVOXELCRAFT_API AVCVoxelWorld : public AActor
@@ -46,7 +47,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	TSubclassOf<AVCVoxelChunk> VoxelChunkClass;
 
-	TArray<AVCVoxelChunk*> Chunks;
+	TSet<AVCVoxelChunk*> Chunks;
 
-	TArray<FVector> ChunkCoords;
+	TSet<FVector> ChunkCoords;
+
+	TWeakObjectPtr<APawn> PlayerPawn;
 };

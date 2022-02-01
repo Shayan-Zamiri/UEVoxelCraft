@@ -14,6 +14,9 @@ void AVCVoxelWorld::BeginPlay()
 {
 	Super::BeginPlay();
 
+	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+	checkf(PlayerPawn.Get(), TEXT("Unable to get player character"));
+
 	if (!VoxelChunkClass)
 	{
 		UE_LOG(LogTemp, Error, TEXT("VoxelChunkClass not specified in VCVoxelWorld"));
@@ -49,7 +52,7 @@ void AVCVoxelWorld::GenerateChunks(const FVector& InPosition)
 				{
 					AVCVoxelChunk* Chunk = Cast<AVCVoxelChunk>(GetWorld()->SpawnActor<AActor>(
 						VoxelChunkClass, FVector((InPosition.X + x) * ChunkSize * BlockSize,
-												 (InPosition.Y + y) * ChunkSize * BlockSize, 0),
+						                         (InPosition.Y + y) * ChunkSize * BlockSize, 0),
 						FRotator::ZeroRotator));
 					checkf(Chunk, TEXT("Something went wrong creating chunk %d %d"), x, y);
 
@@ -63,29 +66,23 @@ void AVCVoxelWorld::GenerateChunks(const FVector& InPosition)
 
 void AVCVoxelWorld::CullChunks()
 {
-	for (int Index = 0; Index < Chunks.Num(); ++Index)
+	for (auto It = Chunks.CreateIterator(); It; ++It)
 	{
-		if (!IsInRadius(*Chunks[Index]))
+		if (!IsInRadius(*Chunks[It.GetId()]))
 		{
-			Chunks[Index]->Destroy();
-			Chunks.RemoveAt(Index);
-			ChunkCoords.RemoveAt(Index);
+			Chunks[It.GetId()]->Destroy();
+			Chunks.Remove(Chunks[It.GetId()]);
+			ChunkCoords.Remove(ChunkCoords[It.GetId()]);
 		}
 	}
 }
 
-void AVCVoxelWorld::AddChunks()
-{	
-	GenerateChunks(GetPlayerPositionInChunkBasis());
-}
+void AVCVoxelWorld::AddChunks() { GenerateChunks(GetPlayerPositionInChunkBasis()); }
 
 FVector AVCVoxelWorld::GetPlayerPositionInChunkBasis() const
 {
-	AVCCharacter* PlayerCharacter = Cast<AVCCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
-	checkf(PlayerCharacter, TEXT("Unable to get player character"));
-
-	const float PositionX = FMath::FloorToInt(PlayerCharacter->GetActorLocation().X / (ChunkSize * BlockSize));
-	const float PositionY = FMath::FloorToInt(PlayerCharacter->GetActorLocation().Y / (ChunkSize * BlockSize));
+	const float PositionX = FMath::FloorToInt(PlayerPawn->GetActorLocation().X / (ChunkSize * BlockSize));
+	const float PositionY = FMath::FloorToInt(PlayerPawn->GetActorLocation().Y / (ChunkSize * BlockSize));
 	return FVector{PositionX, PositionY, 0.0f};
 }
 
