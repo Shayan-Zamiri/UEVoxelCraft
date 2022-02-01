@@ -64,9 +64,12 @@ void AVCVoxelWorld::GenerateChunks(const FVector& Position)
 
 void AVCVoxelWorld::CullChunks()
 {
+	/** Used a normal for-loop because the TSet we use for iteration might change in size. That may cause problems with range-based for-loops
+	 *	since they check the loop bounds only once and may get out of the range of the container.
+	 */
 	for (auto It = Chunks.CreateIterator(); It; ++It)
 	{
-		if (!IsInRadius(*Chunks[It.GetId()]))
+		if (!IsInRadius(ChunkCoords[It.GetId()]))
 		{
 			Chunks[It.GetId()]->Destroy();
 			Chunks.Remove(Chunks[It.GetId()]);
