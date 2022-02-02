@@ -30,7 +30,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category= "Properties", meta= (BindWidget))
 	UTextBlock* ItemCount;
 
-	UPROPERTY(BlueprintReadWrite, Category= "Properties", meta= (BindWidget))
+	UPROPERTY(BlueprintReadWrite, Category= "Properties")
 	UTextBlock* ItemDescription;
 
 	UPROPERTY(BlueprintReadWrite, Category= "Properties", meta= (BindWidget))

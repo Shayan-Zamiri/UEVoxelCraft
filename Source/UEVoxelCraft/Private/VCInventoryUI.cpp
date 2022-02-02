@@ -64,9 +64,9 @@ void UVCInventoryUI::UpdateUI()
 			{
 				SlotUI->ItemCount->SetText(FText::AsNumber(Inventory->GetItem(Index - 1)->GetItemCount()));
 				SlotUI->SlotNumber->SetText(FText::AsNumber(Index));
-				SlotUI->ItemDescription->SetToolTipText(Inventory->GetItem(Index - 1)->GetItemDescription());
+				SlotUI->SetToolTipText(Inventory->GetItem(Index - 1)->GetItemDescription());
 				// TODO: Load required assets
-				SlotUI->ItemIcon->SetBrushFromTexture(Inventory->GetItem(Index - 1)->GetItemIcon(), true);
+				// SlotUI->ItemIcon->SetBrushFromTexture(Inventory->GetItem(Index - 1)->GetItemIcon(), true);
 			}
 		}
 	}
