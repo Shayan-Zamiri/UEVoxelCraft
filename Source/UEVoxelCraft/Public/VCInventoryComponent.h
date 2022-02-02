@@ -25,6 +25,12 @@ protected:
 	virtual void BeginPlay() override;
 
 	// FUNCTIONS
+public:
+	/** number of slots in InventorySlots */
+	int32 GetSlotsNum() const;
+
+	const UVCItemDataAsset* GetItem(int32 SlotNumber);
+	
 protected:
 	/** Pass 0 to make the slot empty */
 	void DecreaseItemSlotCount(int32 SlotNumber, int32 Count = 1);
@@ -41,16 +47,11 @@ protected:
 	/** Find the first Appropriate slot that can stack this item(AssetID = Name + Type), returns nullptr if it can't find anything. */
 	UVCItemSlot* FindAppropriateSlot(const FPrimaryAssetId& AssetID);
 
-	UVCItemSlot& GetSlot(int32 SlotNumber);
-
-	/** number of slots in InventorySlots */
-	int32 GetSlotsNum() const;
+	UVCItemSlot& GetSlot(int32 SlotNumber);	
 
 	bool IsSlotValid(const UVCItemSlot* InItemSlot) const;
 
 	bool IsSlotEmpty(int32 SlotNumber);
-
-	const UVCItemDataAsset* GetItem(int32 SlotNumber);
 
 	void AddItemToInventoryData(UVCItemDataAsset* InOutItemDA);
 
