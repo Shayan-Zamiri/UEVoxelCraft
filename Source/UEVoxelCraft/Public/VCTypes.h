@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "VCAssetManager.h"
+#include "VCTypes.generated.h"
 
 // CONSTEXPR
 
