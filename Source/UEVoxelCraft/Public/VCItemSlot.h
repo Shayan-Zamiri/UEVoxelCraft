@@ -16,25 +16,21 @@ class UEVOXELCRAFT_API UVCItemSlot : public UObject
 public:
 	UVCItemSlot();
 
-	UVCItemSlot(const FPrimaryAssetType InSlotItemType, const uint8 InSlotNumber);
-
-	UVCItemSlot(const uint8 InSlotNumber, const uint8 InSlotMaxCount, const FPrimaryAssetType& InItemType);
+	UVCItemSlot(const FPrimaryAssetType& InSlotItemType, int32 SlotNumber);
 
 	virtual ~UVCItemSlot() override = default;
 
 	// FUNCTIONS
 public:
+	bool operator<(const UVCItemSlot& rhs) const { return SlotNumber < rhs.SlotNumber; }
+
 	UFUNCTION(BlueprintCallable, Category= "Functions")
 	bool IsSlotValid() const;
 
 	UFUNCTION(BlueprintCallable, Category= "Functions")
 	bool IsSlotEmpty() const;
 
-	/* Defined so that our ItemSlots can be sorted by TSortedMap<> */
-	bool operator<(const UVCItemSlot& rhs) const { return SlotNumber < rhs.SlotNumber; }
-	
 	int32 GetSlotMaxCount() const;
-
 
 	// GETTERS & SETTERS
 public:
@@ -55,11 +51,13 @@ public:
 
 	UFUNCTION(BlueprintSetter)
 	void SetSlotItemType(const FPrimaryAssetType& InSlotItemType);
-	
-	const TWeakObjectPtr<UVCItemDataAsset>& GetItemReference() const; 	
-	
-	void SetItemReference(UVCItemDataAsset* InOutItemDataAsset);
-	
+
+	UFUNCTION(BlueprintGetter)
+	const UVCItemDataAsset* GetItem() const;
+
+	UFUNCTION(BlueprintSetter)
+	void SetItem(const UVCItemDataAsset* InItemDataAsset);
+
 	// PROPERTIES
 protected:
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotNumber", BlueprintSetter= "SetSlotNumber", Category= "Properties|ItemSlot")
@@ -71,6 +69,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotItemType", BlueprintSetter= "SetSlotItemType", Category= "Properties|ItemSlot")
 	FPrimaryAssetType SlotItemType;
 
-	UPROPERTY()
-	TWeakObjectPtr<UVCItemDataAsset> ItemReference;
+	/** Weak reference to item that is held in the slot */
+	UPROPERTY(VisibleAnywhere, Instanced, BlueprintGetter= "GetItem", BlueprintSetter= "SetItem", Category= "Properties|ItemSlot")
+	const UVCItemDataAsset* Item;
 };

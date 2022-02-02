@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "VCItemDataAsset.h"
 #include "VCTypes.h"
 #include "Components/ActorComponent.h"
 #include "VCInventoryComponent.generated.h"
@@ -11,7 +10,7 @@
 class UVCItemDataAsset;
 class UVCItemSlot;
 
-UCLASS(ClassGroup=(VoxelCraft), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(VoxelCraft), meta=(BlueprintSpawnableComponent), Blueprintable)
 class UEVOXELCRAFT_API UVCInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -28,57 +27,52 @@ protected:
 	// FUNCTIONS
 protected:
 	/** Pass 0 to make the slot empty */
-	void DecreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount = 1);
+	void DecreaseItemSlotCount(int32 SlotNumber, int32 Count = 1);
 
 	/** Pass 0 to make the slot full */
-	void IncreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount = 1);
+	void IncreaseItemSlotCount(int32 SlotNumber, int32 Count = 1);
 
 	/** Forcibly changes an Item in an ItemSlot */
-	void InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAsset* InItem, uint8 InCount);
+	void InsertInSlot(int32 SlotNumber, int32 Count, UVCItemDataAsset* InItem);
 
-	/** Find the first empty slot */
+	/** Find the first empty slot, returns nullptr if it can't find anything */
 	UVCItemSlot* FindEmptySlot();
 
-	/** Find the first Appropriate slot that can stack this item(AssetID = Name + Type). */
+	/** Find the first Appropriate slot that can stack this item(AssetID = Name + Type), returns nullptr if it can't find anything. */
 	UVCItemSlot* FindAppropriateSlot(const FPrimaryAssetId& AssetID);
 
-	UVCItemSlot* GetSlot(uint8 InSlotNumber);
+	UVCItemSlot& GetSlot(int32 SlotNumber);
 
 	/** number of slots in InventorySlots */
 	int32 GetSlotsNum() const;
 
-	bool IsSlotEmpty(const UVCItemSlot* InItemSlot) const;
-
 	bool IsSlotValid(const UVCItemSlot* InItemSlot) const;
 
-	UVCItemDataAsset* GetItem(const UVCItemSlot* InItemSlot);
+	bool IsSlotEmpty(int32 SlotNumber);
 
-	void AddItemToInventoryData(UVCItemDataAsset* InOutItemDataAsset, int32 InCount = 1);
+	const UVCItemDataAsset* GetItem(int32 SlotNumber);
 
-	void RemoveItemFromInventoryData(UVCItemDataAsset* InItemDataAsset, int32 InCount = 1);
+	void AddItemToInventoryData(UVCItemDataAsset* InOutItemDA);
+
+	void RemoveItemFromInventoryData(UVCItemDataAsset* InOutItemDA, int32 Count = 1);
 
 private:
-	/** Used to initialize inventory with the data that designer has entered in InventorySlotsEditor */
+	/** Always ensure that we have made slots in the amount of SlotCount in the constructor */
 	void InventorySlotsInitializer();
 
 	// GETTERS & SETTERS
 public:
 	// PROPERTIES
 protected:
-	UPROPERTY(EditAnywhere, Category= "Properties|Inventory")
-	TMap<FVCEditorItemSlot, UVCItemDataAsset*> InventorySlotsEditor;
+	UPROPERTY(VisibleAnywhere, Category= "Properties")
+	int32 SlotCount;
 
-	UPROPERTY()
-	TArray<UVCItemDataAsset*> ItemsStrongReferences;
-
-	UPROPERTY()
-	TArray<UVCItemSlot*> ItemSlotsStrongReferences;
-
-	UPROPERTY(EditAnywhere, Category= "Properties|Inventory")
+	UPROPERTY(EditAnywhere, Category= "Properties")
 	UVCItemSlot* EquippedSlot;
 
-	UPROPERTY(EditAnywhere, Category= "Properties|Inventory")
-	TMap<UVCItemDataAsset*, int32 /**count*/> InventoryData;
+	UPROPERTY(VisibleAnywhere, Instanced, Category= "Properties")
+	TSet<UVCItemDataAsset*> InventoryData;
 
-	TSortedMap<uint8, TPair<UVCItemSlot*, UVCItemDataAsset*>> InventorySlots;
+	UPROPERTY(VisibleAnywhere, Instanced, Category= "Properties")
+	TArray<UVCItemSlot*> InventorySlots;
 };

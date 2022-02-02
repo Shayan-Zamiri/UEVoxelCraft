@@ -14,8 +14,8 @@ class UEVOXELCRAFT_API UVCItemDataAsset : public UPrimaryDataAsset
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
 	UVCItemDataAsset();
-	UVCItemDataAsset(int32 InMaxItemCount, const FText& InItemName, const FText& ItemDescription, const FPrimaryAssetType& InItemType,
-	                 const TSoftClassPtr<AActor>& InItemClass, const TSoftObjectPtr<UTexture2D>& InItemIcon);
+	UVCItemDataAsset(const TSoftClassPtr<AActor>& InItemClass, const TSoftObjectPtr<UTexture2D>& InItemIcon,
+	                 const FText& ItemName, const FText& ItemDescription, const FPrimaryAssetType& InItemType, int32 MaxItemCount);
 
 	virtual ~UVCItemDataAsset() override = default;
 
@@ -24,6 +24,12 @@ public:
 
 	// GETTERS & SETTERS
 public:
+	UFUNCTION(BlueprintGetter)
+	int32 GetItemCount() const;
+
+	UFUNCTION(BlueprintSetter)
+	void SetItemCount(int32 InItemCount);
+
 	UFUNCTION(BlueprintGetter)
 	int32 GetMaxItemCount() const;
 
@@ -62,6 +68,11 @@ public:
 
 	// PROPERTIES
 protected:
+	/** Number of this item in the whole inventory. */
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemCount", BlueprintSetter= "SetItemCount", Category= "Properties")
+	int32 ItemCount;
+
+	/** Maximum number of this item that one slot can hold. */
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetMaxItemCount", BlueprintSetter= "SetMaxItemCount", Category= "Properties")
 	int32 MaxItemCount;
 
@@ -71,14 +82,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemDescription", BlueprintSetter= "SetItemDescription", Category= "Properties")
 	FText ItemDescription;
 
-	/* Examples: Potion, Block, ... (defined in assset manager and project setting) */
+	/* Examples: Potion, Block, ... (defined in asset manager and project setting) */
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemType", BlueprintSetter= "SetItemType", Category= "Properties")
 	FPrimaryAssetType ItemType;
 
 	/** Class required to spawn an instance of this item */
-	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemClass", BlueprintSetter= "SetItemClass", Category= "Properties", meta=(AssetBundles= Inventory))
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemClass", BlueprintSetter= "SetItemClass", Category= "Properties",
+		meta=(AssetBundles= Inventory))
 	TSoftClassPtr<AActor> ItemClass;
 
-	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemIcon", BlueprintSetter= "SetItemIcon", Category= "Properties", meta=(AssetBundles= Inventory))
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemIcon", BlueprintSetter= "SetItemIcon", Category= "Properties",
+		meta=(AssetBundles= Inventory))
 	TSoftObjectPtr<UTexture2D> ItemIcon;
 };

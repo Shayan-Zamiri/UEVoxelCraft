@@ -5,14 +5,18 @@
 #include "VCItemSlot.h"
 #include "VCItemDataAsset.h"
 
+// STATICS
+
 // CTOR/DTOR & VIRTUAL FUNCTIONS 
 
-UVCInventoryComponent::UVCInventoryComponent() { PrimaryComponentTick.bCanEverTick = false; }
+UVCInventoryComponent::UVCInventoryComponent() : SlotCount{10}
+{
+	PrimaryComponentTick.bCanEverTick = false;
+	InventorySlotsInitializer();
+}
 
 UVCInventoryComponent::~UVCInventoryComponent()
 {
-	ItemsStrongReferences.Empty();
-	ItemSlotsStrongReferences.Empty();
 	InventorySlots.Empty();
 	InventoryData.Empty();
 }
@@ -20,46 +24,43 @@ UVCInventoryComponent::~UVCInventoryComponent()
 void UVCInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	InventorySlotsInitializer();
 }
 
 // FUNCTIONS
 
-void UVCInventoryComponent::DecreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount)
+void UVCInventoryComponent::DecreaseItemSlotCount(int32 SlotNumber, int32 Count)
 {
-	check(IsValid(InItemSlot))
-	if (InItemSlot->IsSlotEmpty())
+	UVCItemSlot& Slot = GetSlot(SlotNumber);
+	if (Slot.IsSlotEmpty())
 		return;
 
-	InItemSlot->SetSlotItemCount(InCount == 0 ? 0 : InItemSlot->GetSlotItemCount() - InCount);
+	Slot.SetSlotItemCount(Count == 0 ? 0 : Slot.GetSlotItemCount() - Count);
 }
 
-void UVCInventoryComponent::IncreaseItemSlotCount(UVCItemSlot* InItemSlot, uint8 InCount)
+void UVCInventoryComponent::IncreaseItemSlotCount(int32 SlotNumber, int32 Count)
 {
-	check(IsValid(InItemSlot))
-	if (InItemSlot->IsSlotEmpty())
+	UVCItemSlot& Slot = GetSlot(SlotNumber);
+	if (Slot.IsSlotEmpty())
 		return;
 
-	InItemSlot->SetSlotItemCount(InCount == 0 ? InItemSlot->GetItemReference().Get()->GetMaxItemCount() : InItemSlot->GetSlotItemCount() + InCount);
+	Slot.SetSlotItemCount(Count == 0 ? Slot.GetItem()->GetMaxItemCount() : Slot.GetSlotItemCount() + Count);
 }
 
-void UVCInventoryComponent::InsertInSlot(UVCItemSlot* InItemSlot, UVCItemDataAsset* InItem, uint8 InCount)
+void UVCInventoryComponent::InsertInSlot(int32 SlotNumber, int32 Count, UVCItemDataAsset* InItem)
 {
-	check(IsValid(InItemSlot));
 	check(IsValid(InItem));
-	UVCItemDataAsset*& Item = InventorySlots.FindChecked(InItemSlot->GetSlotNumber()).Value;
-	Item = InItem;
-	InItemSlot->SetSlotItemCount(InCount);
+	GetSlot(SlotNumber).SetItem(InItem);
+	GetSlot(SlotNumber).SetSlotItemCount(Count);
 }
 
 UVCItemSlot* UVCInventoryComponent::FindEmptySlot()
 {
-	for (auto& It : InventorySlots)
+	for (const auto& It : InventorySlots)
 	{
-		UVCItemSlot* ItemSlot = It.Value.Key;
-		check(IsValid(ItemSlot));
-		if (IsSlotEmpty(ItemSlot)) { return ItemSlot; }
+		if (It->IsSlotEmpty())
+		{
+			return It;
+		}
 	}
 
 	return nullptr;
@@ -69,86 +70,80 @@ UVCItemSlot* UVCInventoryComponent::FindAppropriateSlot(const FPrimaryAssetId& A
 {
 	bool bIsEmptySlotFounded = false;
 	UVCItemSlot* ReturnSlot = nullptr;
-	for (auto& It : InventorySlots)
+	for (const auto& It : InventorySlots)
 	{
-		UVCItemDataAsset* Item = It.Value.Value;
-		UVCItemSlot* ItemSlot = It.Value.Key;
-		check(IsValid(ItemSlot));
+		const UVCItemDataAsset* Item = It->GetItem();
 		// Appropriate Stackable Slot
-		if (Item && Item->GetPrimaryAssetId() == AssetID && ItemSlot->GetSlotItemCount() < ItemSlot->GetSlotMaxCount())
+		if (IsValid(Item) && Item->GetPrimaryAssetId() == AssetID && It->GetSlotItemCount() < It->GetSlotMaxCount())
 		{
-			ReturnSlot = ItemSlot;
+			ReturnSlot = It;
 			break;
 		}
 		// Appropriate Empty Slot
-		if (!bIsEmptySlotFounded && ItemSlot->GetSlotItemType() == AssetID.PrimaryAssetType && IsSlotEmpty(ItemSlot))
+		if (!bIsEmptySlotFounded && It->GetSlotItemType() == AssetID.PrimaryAssetType && IsSlotEmpty(It->GetSlotNumber()))
 		{
-			ReturnSlot = ItemSlot;
+			ReturnSlot = It;
 			bIsEmptySlotFounded = true;
 		}
 	}
 	return ReturnSlot;
 }
 
-UVCItemSlot* UVCInventoryComponent::GetSlot(uint8 InSlotNumber)
+UVCItemSlot& UVCInventoryComponent::GetSlot(int32 SlotNumber)
 {
-	UVCItemSlot* ItemSlot = InventorySlots.FindChecked(InSlotNumber).Key;
-	check(IsValid(ItemSlot));
-	return ItemSlot;
+	checkf(SlotNumber < 0 || SlotNumber > GetSlotsNum(), TEXT("SlotNumber is out of range"));
+	return *InventorySlots[SlotNumber];
 }
 
 int32 UVCInventoryComponent::GetSlotsNum() const { return InventorySlots.Num(); }
 
-bool UVCInventoryComponent::IsSlotEmpty(const UVCItemSlot* InItemSlot) const
-{
-	check(IsValid(InItemSlot));
-	return InItemSlot->IsSlotEmpty();
-}
-
 bool UVCInventoryComponent::IsSlotValid(const UVCItemSlot* InItemSlot) const
 {
 	check(IsValid(InItemSlot));
-	return InventorySlots.Contains(InItemSlot->GetSlotNumber()) && InItemSlot->IsSlotValid();
+	return InventorySlots.Contains(InItemSlot) && InItemSlot->IsSlotValid();
 }
 
-UVCItemDataAsset* UVCInventoryComponent::GetItem(const UVCItemSlot* InItemSlot)
+bool UVCInventoryComponent::IsSlotEmpty(int32 SlotNumber)
 {
-	check(IsValid(InItemSlot));
-	UVCItemDataAsset* Item = InventorySlots.FindChecked(InItemSlot->GetSlotNumber()).Value;
-	return Item;
+	return GetSlot(SlotNumber).IsSlotEmpty();
 }
 
-void UVCInventoryComponent::AddItemToInventoryData(UVCItemDataAsset* InOutItemDataAsset, int32 InCount)
+const UVCItemDataAsset* UVCInventoryComponent::GetItem(int32 SlotNumber)
 {
-	check(IsValid(InOutItemDataAsset));
-	InventoryData.Add(InOutItemDataAsset, InCount);
-	ItemsStrongReferences.Add(InOutItemDataAsset);
+	return GetSlot(SlotNumber).GetItem();
 }
 
-void UVCInventoryComponent::RemoveItemFromInventoryData(UVCItemDataAsset* InItemDataAsset, int32 InCount)
+void UVCInventoryComponent::AddItemToInventoryData(UVCItemDataAsset* InOutItemDA)
 {
-	check(IsValid(InItemDataAsset));
-	int32* Count = InventoryData.Find(InItemDataAsset);
-	check(Count)
-	if (*Count - InCount <= 0)
+	check(IsValid(InOutItemDA));
+	InventoryData.Add(InOutItemDA);
+}
+
+void UVCInventoryComponent::RemoveItemFromInventoryData(UVCItemDataAsset* InOutItemDA, int32 Count)
+{
+	check(IsValid(InOutItemDA));
+	checkf(InventoryData.Contains(InOutItemDA), TEXT("ItemDataAsset isn't in the inventory data"));
+	if (InOutItemDA->GetItemCount() - Count <= 0)
 	{
-		InventoryData.Remove(InItemDataAsset);
-		ItemsStrongReferences.Remove(InItemDataAsset);
+		InventoryData.Remove(InOutItemDA);
 	}
-	else { *Count -= InCount; }
+	else
+	{
+		InOutItemDA->SetItemCount(InOutItemDA->GetItemCount() - Count);
+	}
 }
 
 void UVCInventoryComponent::InventorySlotsInitializer()
 {
-	for (auto& It : InventorySlotsEditor)
+	for (int32 i = 0; i < SlotCount; i++)
 	{
-		UVCItemSlot* ItemSlot = NewObject<UVCItemSlot>(this, UVCItemSlot::StaticClass());
-		ItemSlot->SetSlotNumber(It.Key.SlotNumber);
-		ItemSlot->SetSlotItemType(It.Key.SlotItemType);
-		ItemSlot->SetSlotItemCount(It.Key.SlotItemCount);
-		ItemsStrongReferences.Add(It.Value);
-		ItemSlotsStrongReferences.Add(ItemSlot);
-		InventorySlots.Add(ItemSlot->GetSlotNumber(), TPairInitializer<UVCItemSlot*, UVCItemDataAsset*>{ItemSlot, It.Value});
+		FString Name{"Slot"};
+		Name.AppendInt(i);
+		UVCItemSlot* ItemSlot = CreateDefaultSubobject<UVCItemSlot>(FName{Name});
+		ItemSlot->SetSlotNumber(i);
+		ItemSlot->SetSlotItemType(UVCAssetManager::InventoryItem);
+		ItemSlot->SetSlotItemCount(0);
+		ItemSlot->SetItem(nullptr);
+		InventorySlots.Add(ItemSlot);
 	}
-	InventorySlotsEditor.Empty();
 }

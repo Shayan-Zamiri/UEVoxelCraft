@@ -7,17 +7,12 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-UVCItemSlot::UVCItemSlot() : SlotNumber{0}, SlotItemCount{0}
+UVCItemSlot::UVCItemSlot() : SlotNumber{0}, SlotItemCount{0}, Item{nullptr}
 {
 }
 
-UVCItemSlot::UVCItemSlot(const FPrimaryAssetType InSlotItemType, const uint8 InSlotNumber)
-	: SlotNumber{InSlotNumber}, SlotItemCount{0}, SlotItemType{InSlotItemType}
-{
-}
-
-UVCItemSlot::UVCItemSlot(const uint8 InSlotNumber, const uint8 InSlotMaxCount, const FPrimaryAssetType& InItemType)
-	: SlotNumber{InSlotNumber}, SlotItemCount{0}, SlotItemType{InItemType}
+UVCItemSlot::UVCItemSlot(const FPrimaryAssetType& InSlotItemType, int32 SlotNumber)
+	: SlotNumber{SlotNumber}, SlotItemCount{0}, SlotItemType{InSlotItemType}, Item{nullptr}
 {
 }
 
@@ -28,7 +23,7 @@ bool UVCItemSlot::IsSlotValid() const { return SlotNumber > 0 && SlotItemType.Is
 bool UVCItemSlot::IsSlotEmpty() const
 {
 	checkf(IsSlotValid(), TEXT("slot number%d isn't valid"), SlotNumber);
-	return SlotItemCount == 0 && ItemReference.IsValid();
+	return SlotItemCount == 0 && IsValid(Item);
 }
 
 // GETTERS & SETTERS
@@ -37,7 +32,7 @@ int32 UVCItemSlot::GetSlotNumber() const { return SlotNumber; }
 
 void UVCItemSlot::SetSlotNumber(int32 InSlotNum) { SlotNumber = InSlotNum; }
 
-int32 UVCItemSlot::GetSlotMaxCount() const { return ItemReference.IsValid() ? ItemReference.Get()->GetMaxItemCount() : 0; }
+int32 UVCItemSlot::GetSlotMaxCount() const { return IsValid(Item) ? Item->GetMaxItemCount() : 0; }
 
 int32 UVCItemSlot::GetSlotItemCount() const { return SlotItemCount; }
 
@@ -45,13 +40,13 @@ void UVCItemSlot::SetSlotItemCount(int32 InSlotItemCount)
 {
 	SlotItemCount = InSlotItemCount < 0 ? 1 : InSlotItemCount;
 	if (SlotItemCount == 0)
-		ItemReference.Reset();
+		Item = nullptr;
 }
 
 const FPrimaryAssetType& UVCItemSlot::GetSlotItemType() const { return SlotItemType; }
 
 void UVCItemSlot::SetSlotItemType(const FPrimaryAssetType& InSlotItemType) { SlotItemType = InSlotItemType; }
 
-const TWeakObjectPtr<UVCItemDataAsset>& UVCItemSlot::GetItemReference() const { return ItemReference; }
+const UVCItemDataAsset* UVCItemSlot::GetItem() const { return Item; }
 
-void UVCItemSlot::SetItemReference(UVCItemDataAsset* InOutItemDataAsset) { ItemReference = InOutItemDataAsset; }
+void UVCItemSlot::SetItem(const UVCItemDataAsset* InOutItemDataAsset) { Item = InOutItemDataAsset; }
