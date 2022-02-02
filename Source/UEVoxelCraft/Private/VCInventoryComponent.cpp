@@ -2,6 +2,8 @@
 
 
 #include "VCInventoryComponent.h"
+
+#include "VCInventoryUI.h"
 #include "VCItemSlot.h"
 #include "VCItemDataAsset.h"
 
@@ -9,7 +11,7 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS 
 
-UVCInventoryComponent::UVCInventoryComponent() : SlotCount{10}
+UVCInventoryComponent::UVCInventoryComponent() : SlotCount{10}, InventoryUIClass{nullptr}, InventoryUI{nullptr}
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	InventorySlotsInitializer();
@@ -24,6 +26,12 @@ UVCInventoryComponent::~UVCInventoryComponent()
 void UVCInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	InventoryUI = Cast<UVCInventoryUI>(CreateWidget(GetWorld(), InventoryUIClass,TEXT("InventoryUI")));
+	check(InventoryUI);
+	InventoryUI->SetOwner(this);
+	InventoryUI->InitializeWidget();
+	InventoryUI->UpdateUI();
+	InventoryUI->AddToViewport();
 }
 
 // FUNCTIONS
@@ -91,7 +99,7 @@ UVCItemSlot* UVCInventoryComponent::FindAppropriateSlot(const FPrimaryAssetId& A
 
 UVCItemSlot& UVCInventoryComponent::GetSlot(int32 SlotNumber)
 {
-	checkf(SlotNumber < 0 || SlotNumber > GetSlotsNum(), TEXT("SlotNumber is out of range"));
+	checkf(SlotNumber > 0 || SlotNumber < GetSlotsNum(), TEXT("SlotNumber is out of range"));
 	return *InventorySlots[SlotNumber];
 }
 

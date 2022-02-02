@@ -8,11 +8,9 @@
 
 class UVCInventoryComponent;
 class UUniformGridPanel;
+class UVCItemDataAsset;
 
-/**
- * 
- */
-UCLASS()
+UCLASS(Abstract)
 class UEVOXELCRAFT_API UVCInventoryUI : public UUserWidget
 {
 	GENERATED_BODY()
@@ -23,21 +21,26 @@ public:
 
 	// FUNCTIONS
 public:
-	UFUNCTION(BlueprintCallable, Category= "UI")
 	void InitializeWidget();
-
-	UFUNCTION(BlueprintCallable, Category= "UI")
+	
 	void UpdateUI();
 
-	// PROPERTIES
-protected:
-	UPROPERTY(EditDefaultsOnly, Category= "Properties")
-	TSubclassOf<UUserWidget> SlotClass;
+	UFUNCTION()
+	void OnLoadItem(FPrimaryAssetId ItemID, class UVCItemSlotUI* OutSlotUI) const;
 
+	void SetOwner(UVCInventoryComponent* InOutOwner);
+protected:
+	// PROPERTIES
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	int32 Columns;
 
-	TWeakObjectPtr<UVCInventoryComponent> Owner;
+	UPROPERTY(VisibleAnywhere, Category= "Properties")
+	int32 SlotCount;
+
+	UPROPERTY(EditDefaultsOnly, Category= "Properties")
+	TSubclassOf<UVCItemSlotUI> SlotClass;
+
+	TWeakObjectPtr<UVCInventoryComponent> InventoryCompOwner;
 
 	UPROPERTY(BlueprintReadWrite, meta= (BindWidget))
 	UUniformGridPanel* GridPanel;

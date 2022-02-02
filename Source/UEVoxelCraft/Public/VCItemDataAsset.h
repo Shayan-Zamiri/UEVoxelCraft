@@ -88,10 +88,10 @@ protected:
 
 	/** Class required to spawn an instance of this item */
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemClass", BlueprintSetter= "SetItemClass", Category= "Properties",
-		meta=(AssetBundles= Inventory))
+		meta=(AssetBundles= "Game"))
 	TSoftClassPtr<AActor> ItemClass;
 
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemIcon", BlueprintSetter= "SetItemIcon", Category= "Properties",
-		meta=(AssetBundles= Inventory))
+		meta=(AssetBundles= "UI"))
 	TSoftObjectPtr<UTexture2D> ItemIcon;
 };

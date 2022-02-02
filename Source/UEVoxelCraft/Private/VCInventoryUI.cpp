@@ -12,8 +12,8 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-UVCInventoryUI::UVCInventoryUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), SlotClass{nullptr}, Columns{0},
-                                                                        Owner{nullptr}, GridPanel{nullptr}
+UVCInventoryUI::UVCInventoryUI(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer), Columns{0}, SlotClass{nullptr},
+                                                                              InventoryCompOwner{nullptr}, GridPanel{nullptr}
 {
 }
 
@@ -22,12 +22,12 @@ UVCInventoryUI::UVCInventoryUI(const FObjectInitializer& ObjectInitializer) : Su
 void UVCInventoryUI::InitializeWidget()
 {
 	checkf(SlotClass, TEXT("UI failed to get slot class"));
-	checkf(!Owner.IsValid(), TEXT("UI failed to specify owner"));
+	checkf(InventoryCompOwner.IsValid(), TEXT("UI failed to specify owner"));
 	checkf(GridPanel, TEXT("UI failed to get uniform grid panel"));
 
+	SlotCount = InventoryCompOwner.Get()->GetSlotsNum();
+
 	GridPanel->ClearChildren();
-	
-	const int32 SlotCount = Owner.Get()->GetSlotsNum();
 
 	const int32 RowCount = SlotCount / Columns;
 
@@ -52,22 +52,34 @@ void UVCInventoryUI::InitializeWidget()
 
 void UVCInventoryUI::UpdateUI()
 {
-	UVCInventoryComponent* Inventory = Owner.Get();
-	
-	for (int Index = 0; Index < Owner.Get()->GetSlotsNum(); ++Index)
+	UVCAssetManager& AssetManager = UVCAssetManager::Get();
+
+	for (int Index = 0; Index < SlotCount; ++Index)
 	{
-		UUserWidget* Widget = Cast<UUserWidget>(GridPanel->GetChildAt(Index - 1));
-		if (Widget)
+		UVCItemSlotUI* SlotUI = Cast<UVCItemSlotUI>(GridPanel->GetChildAt(Index));
+		if (SlotUI)
 		{
-			UVCItemSlotUI* SlotUI = Cast<UVCItemSlotUI>(Widget);
-			if (SlotUI)
+			SlotUI->SlotNumber->SetText(FText::AsNumber(Index));
+			const UVCItemDataAsset* Item = InventoryCompOwner.Get()->GetItem(Index);
+			if (IsValid(Item))
 			{
-				SlotUI->ItemCount->SetText(FText::AsNumber(Inventory->GetItem(Index - 1)->GetItemCount()));
-				SlotUI->SlotNumber->SetText(FText::AsNumber(Index));
-				SlotUI->SetToolTipText(Inventory->GetItem(Index - 1)->GetItemDescription());
-				// TODO: Load required assets
-				// SlotUI->ItemIcon->SetBrushFromTexture(Inventory->GetItem(Index - 1)->GetItemIcon(), true);
+				const FPrimaryAssetId AssetID = Item->GetPrimaryAssetId();
+				const FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &UVCInventoryUI::OnLoadItem, AssetID, SlotUI);
+				AssetManager.LoadPrimaryAsset(AssetID, TArray<FName>{"UI"}, Delegate);
 			}
 		}
 	}
+}
+
+void UVCInventoryUI::OnLoadItem(FPrimaryAssetId ItemID, UVCItemSlotUI* OutSlotUI) const
+{
+	const UVCItemDataAsset* Item = Cast<UVCItemDataAsset>(UVCAssetManager::Get().GetPrimaryAssetObject(ItemID));
+	OutSlotUI->ItemCount->SetText(FText::AsNumber(Item->GetItemCount()));
+	OutSlotUI->SetToolTipText(Item->GetItemDescription());
+	OutSlotUI->ItemIcon->SetBrushFromTexture(Item->GetItemIcon().Get(), true);
+}
+
+void UVCInventoryUI::SetOwner(UVCInventoryComponent* InOutOwner)
+{
+	InventoryCompOwner = InOutOwner;
 }

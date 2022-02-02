@@ -15,8 +15,9 @@ class UEVOXELCRAFT_API UVCAssetManager : public UAssetManager
 	GENERATED_BODY()
 
 	// GETTERS & SETTERS
+public:
 	static UVCAssetManager& Get();
-	
+
 	// PROPERTIES
 public:
 	static const FPrimaryAssetType InventoryItem;

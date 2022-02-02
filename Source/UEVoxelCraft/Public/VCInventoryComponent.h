@@ -9,6 +9,7 @@
 
 class UVCItemDataAsset;
 class UVCItemSlot;
+class UVCInventoryUI;
 
 UCLASS(ClassGroup=(VoxelCraft), meta=(BlueprintSpawnableComponent), Blueprintable)
 class UEVOXELCRAFT_API UVCInventoryComponent : public UActorComponent
@@ -30,7 +31,7 @@ public:
 	int32 GetSlotsNum() const;
 
 	const UVCItemDataAsset* GetItem(int32 SlotNumber);
-	
+
 protected:
 	/** Pass 0 to make the slot empty */
 	void DecreaseItemSlotCount(int32 SlotNumber, int32 Count = 1);
@@ -47,7 +48,7 @@ protected:
 	/** Find the first Appropriate slot that can stack this item(AssetID = Name + Type), returns nullptr if it can't find anything. */
 	UVCItemSlot* FindAppropriateSlot(const FPrimaryAssetId& AssetID);
 
-	UVCItemSlot& GetSlot(int32 SlotNumber);	
+	UVCItemSlot& GetSlot(int32 SlotNumber);
 
 	bool IsSlotValid(const UVCItemSlot* InItemSlot) const;
 
@@ -70,6 +71,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	UVCItemSlot* EquippedSlot;
+
+	UPROPERTY(EditAnywhere, Category= "Properties")
+	TSubclassOf<UVCInventoryUI> InventoryUIClass;
+
+	UPROPERTY(VisibleAnywhere, Category= "Properties")
+	UVCInventoryUI* InventoryUI;
 
 	UPROPERTY(VisibleAnywhere, Instanced, Category= "Properties")
 	TSet<UVCItemDataAsset*> InventoryData;
