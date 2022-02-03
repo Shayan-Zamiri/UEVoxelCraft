@@ -35,7 +35,7 @@ void UVCInventoryUI::InitializeWidget()
 	{
 		for (uint8 Col = 0; Col < Columns; ++Col)
 		{
-			if (Row + ((Col + 1) * RowCount) == SlotCount)
+			if (Row + (Col * RowCount) == SlotCount)
 			{
 				return;
 			}
@@ -57,7 +57,7 @@ void UVCInventoryUI::UpdateUI()
 		UVCItemSlotUI* SlotUI = Cast<UVCItemSlotUI>(GridPanel->GetChildAt(Index));
 		if (SlotUI)
 		{
-			SlotUI->SlotNumber->SetText(FText::AsNumber(Index));
+			SlotUI->SlotNumber->SetText(FText::AsNumber(Index + 1));
 			const UVCItemDataAsset* Item = InventoryCompOwner.Get()->GetItem(Index);
 			if (IsValid(Item))
 			{
