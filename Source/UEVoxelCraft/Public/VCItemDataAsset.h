@@ -85,11 +85,9 @@ protected:
 	FPrimaryAssetType ItemType;
 
 	/** Class required to spawn an instance of this item */
-	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemClass", BlueprintSetter= "SetItemClass", Category= "Properties",
-		meta=(AssetBundles= "Game"))
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemClass", BlueprintSetter= "SetItemClass", Category= "Properties")
 	TSoftClassPtr<AActor> ItemClass;
 
-	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemIcon", BlueprintSetter= "SetItemIcon", Category= "Properties",
-		meta=(AssetBundles= "UI"))
+	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemIcon", BlueprintSetter= "SetItemIcon", Category= "Properties")
 	TSoftObjectPtr<UTexture2D> ItemIcon;
 };

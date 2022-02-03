@@ -2,7 +2,6 @@
 
 
 #include "VCInventoryComponent.h"
-
 #include "VCInventoryUI.h"
 #include "VCItemSlot.h"
 #include "VCItemDataAsset.h"
@@ -52,6 +51,8 @@ void UVCInventoryComponent::AddItem(const FPrimaryAssetId& InItemID, int32 Count
 	{
 		LoadAndAddItem(InItemID, Slot->GetSlotNumber(), Count);
 	}
+
+	UpdateInventoryUI();
 }
 
 bool UVCInventoryComponent::ContainsItem(const FPrimaryAssetId& InItemID) const
@@ -178,18 +179,21 @@ void UVCInventoryComponent::LoadAndAddItem(const FPrimaryAssetId& InItemID, int3
 	UVCAssetManager& AssetManager = UVCAssetManager::Get();
 	const FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &UVCInventoryComponent::OnLoadItem, InItemID, SlotNumber,
 	                                                                        Count);
-	AssetManager.LoadPrimaryAsset(InItemID, TArray<FName>{"UI", "Game"}, Delegate);
+	AssetManager.LoadPrimaryAsset(InItemID, TArray<FName>{}, Delegate);
 }
 
 void UVCInventoryComponent::OnLoadItem(FPrimaryAssetId ItemID, int32 SlotNumber, int32 Count)
 {
 	const UVCAssetManager& AssetManager = UVCAssetManager::Get();
 	UObject* Object = AssetManager.GetPrimaryAssetObject(ItemID);
+	if (!IsValid(Object))
+		return;
+
 	UVCItemDataAsset* Item = Cast<UVCItemDataAsset>(Object);
-	checkf(IsValid(Item), TEXT("Item isn't load"))
 	Item->SetItemCount(Count);
 	AddItemToInventoryData(ItemID, Item);
 	InsertInSlot(SlotNumber, Count, Item);
+	UpdateInventoryUI();
 }
 
 void UVCInventoryComponent::InventorySlotsInitializer()

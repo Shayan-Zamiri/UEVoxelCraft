@@ -5,6 +5,7 @@
 
 #include "VCCharacter.h"
 #include "VCInventoryComponent.h"
+#include "VCItemDataAsset.h"
 #include "Kismet/GameplayStatics.h"
 
 // FUNCTIONS
@@ -22,5 +23,4 @@ void UVCCheatManager::AddItemToInventory(FString Item, int32 Count)
 
 	const FPrimaryAssetId ItemID{UVCAssetManager::InventoryItem, FName{Item}};
 	Character->InventoryComp->AddItem(ItemID, Count);
-	Character->InventoryComp->UpdateInventoryUI();
 }
