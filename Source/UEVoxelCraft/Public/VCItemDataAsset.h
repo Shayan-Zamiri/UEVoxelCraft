@@ -53,10 +53,10 @@ public:
 	void SetItemType(const FPrimaryAssetType& InType);
 
 	UFUNCTION(BlueprintGetter)
-	const TSoftClassPtr<AActor>& GetItemClass() const;
+	TSubclassOf<AActor> GetItemClass() const;
 
 	UFUNCTION(BlueprintSetter)
-	void SetItemClass(const TSoftClassPtr<AActor>& InClass);
+	void SetItemClass(TSubclassOf<AActor> InClass);
 
 	UFUNCTION(BlueprintGetter)
 	UTexture2D* GetItemIcon() const;
@@ -86,7 +86,7 @@ protected:
 
 	/** Class required to spawn an instance of this item */
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemClass", BlueprintSetter= "SetItemClass", Category= "Properties")
-	TSoftClassPtr<AActor> ItemClass;
+	TSubclassOf<AActor> ItemClass;
 
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemIcon", BlueprintSetter= "SetItemIcon", Category= "Properties")
 	UTexture2D* ItemIcon;

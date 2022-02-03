@@ -15,8 +15,11 @@ class UEVOXELCRAFT_API UVCCheatManager : public UCheatManager
 public:
 	/** Runs a garbage collection */
 	UFUNCTION(Exec)
-	void ForceGC();
+	void ForceGC() const;
 
 	UFUNCTION(Exec)
-	void AddItemToInventory(FString Item, int32 Count);
+	void AddItemToInventory(FString Item, int32 Count) const;
+
+	UFUNCTION(Exec)
+	void SpawnItem(int32 SlotNumber) const;
 };

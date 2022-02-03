@@ -10,12 +10,12 @@
 
 // FUNCTIONS
 
-void UVCCheatManager::ForceGC()
+void UVCCheatManager::ForceGC() const
 {
 	GEngine->ForceGarbageCollection(true);
 }
 
-void UVCCheatManager::AddItemToInventory(FString Item, int32 Count)
+void UVCCheatManager::AddItemToInventory(FString Item, int32 Count) const
 {
 	AVCCharacter* Character = Cast<AVCCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (!Character)
@@ -23,4 +23,18 @@ void UVCCheatManager::AddItemToInventory(FString Item, int32 Count)
 
 	const FPrimaryAssetId ItemID{UVCAssetManager::InventoryItem, FName{Item}};
 	Character->InventoryComp->AddItem(ItemID, Count);
+}
+
+void UVCCheatManager::SpawnItem(int32 SlotNumber) const
+{
+	AVCCharacter* Character = Cast<AVCCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (!Character)
+		return;
+
+	const UVCItemDataAsset* Item = Character->InventoryComp->GetItem(SlotNumber);
+	if (IsValid(Item))
+	{
+		const FVector Forward = Character->GetActorForwardVector();
+		GetWorld()->SpawnActor<AActor>(Item->GetItemClass(), Character->GetActorLocation() + Forward * 150.0f, FRotator{});
+	}
 }

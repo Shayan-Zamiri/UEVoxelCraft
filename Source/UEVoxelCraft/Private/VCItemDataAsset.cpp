@@ -42,9 +42,9 @@ const FPrimaryAssetType& UVCItemDataAsset::GetItemType() const { return ItemType
 
 void UVCItemDataAsset::SetItemType(const FPrimaryAssetType& InType) { ItemType = InType; }
 
-const TSoftClassPtr<AActor>& UVCItemDataAsset::GetItemClass() const { return ItemClass; }
+TSubclassOf<AActor> UVCItemDataAsset::GetItemClass() const { return ItemClass; }
 
-void UVCItemDataAsset::SetItemClass(const TSoftClassPtr<AActor>& InClass) { ItemClass = InClass; }
+void UVCItemDataAsset::SetItemClass(TSubclassOf<AActor> InClass) { ItemClass = InClass; }
 
 UTexture2D* UVCItemDataAsset::GetItemIcon() const { return ItemIcon; }
 
