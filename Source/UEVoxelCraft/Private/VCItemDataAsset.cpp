@@ -46,6 +46,6 @@ const TSoftClassPtr<AActor>& UVCItemDataAsset::GetItemClass() const { return Ite
 
 void UVCItemDataAsset::SetItemClass(const TSoftClassPtr<AActor>& InClass) { ItemClass = InClass; }
 
-const TSoftObjectPtr<UTexture2D>& UVCItemDataAsset::GetItemIcon() const { return ItemIcon; }
+UTexture2D* UVCItemDataAsset::GetItemIcon() const { return ItemIcon; }
 
-void UVCItemDataAsset::SetItemIcon(const TSoftObjectPtr<UTexture2D>& InIcon) { ItemIcon = InIcon; }
+void UVCItemDataAsset::SetItemIcon(UTexture2D* InIcon) { ItemIcon = InIcon; }

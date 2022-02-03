@@ -59,10 +59,10 @@ public:
 	void SetItemClass(const TSoftClassPtr<AActor>& InClass);
 
 	UFUNCTION(BlueprintGetter)
-	const TSoftObjectPtr<UTexture2D>& GetItemIcon() const;
+	UTexture2D* GetItemIcon() const;
 
 	UFUNCTION(BlueprintSetter)
-	void SetItemIcon(const TSoftObjectPtr<UTexture2D>& InIcon);
+	void SetItemIcon(UTexture2D* InIcon);
 
 	// PROPERTIES
 protected:
@@ -89,5 +89,5 @@ protected:
 	TSoftClassPtr<AActor> ItemClass;
 
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemIcon", BlueprintSetter= "SetItemIcon", Category= "Properties")
-	TSoftObjectPtr<UTexture2D> ItemIcon;
+	UTexture2D* ItemIcon;
 };

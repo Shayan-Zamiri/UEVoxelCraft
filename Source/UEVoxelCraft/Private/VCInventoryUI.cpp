@@ -69,7 +69,7 @@ void UVCInventoryUI::UpdateUIAt(const int Index)
 		{
 			SlotUI->ItemCount->SetText(FText::AsNumber(Item->GetItemCount()));
 			SlotUI->SetToolTipText(Item->GetItemDescription());
-			SlotUI->ItemIcon->SetBrushFromTexture(Item->GetItemIcon().Get(), true);
+			SlotUI->ItemIcon->SetBrushFromTexture(Item->GetItemIcon(), true);
 		}
 	}
 }
