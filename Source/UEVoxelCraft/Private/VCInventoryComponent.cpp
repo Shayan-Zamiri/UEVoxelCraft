@@ -54,6 +54,11 @@ void UVCInventoryComponent::AddItem(const FPrimaryAssetId& InItemID, int32 Count
 	}
 }
 
+bool UVCInventoryComponent::ContainsItem(const FPrimaryAssetId& InItemID) const
+{
+	return InventoryData.Contains(InItemID);
+}
+
 void UVCInventoryComponent::UpdateInventoryUI()
 {
 	InventoryUI->UpdateUI();
@@ -178,8 +183,10 @@ void UVCInventoryComponent::LoadAndAddItem(const FPrimaryAssetId& InItemID, int3
 
 void UVCInventoryComponent::OnLoadItem(FPrimaryAssetId ItemID, int32 SlotNumber, int32 Count)
 {
-	UVCItemDataAsset* Item = Cast<UVCItemDataAsset>(UVCAssetManager::Get().GetPrimaryAssetObject(ItemID));
-	checkf(IsValid(Item),TEXT("Item isn't load"))
+	const UVCAssetManager& AssetManager = UVCAssetManager::Get();
+	UObject* Object = AssetManager.GetPrimaryAssetObject(ItemID);
+	UVCItemDataAsset* Item = Cast<UVCItemDataAsset>(Object);
+	checkf(IsValid(Item), TEXT("Item isn't load"))
 	Item->SetItemCount(Count);
 	AddItemToInventoryData(ItemID, Item);
 	InsertInSlot(SlotNumber, Count, Item);

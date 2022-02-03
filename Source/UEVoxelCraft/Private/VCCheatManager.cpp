@@ -14,13 +14,13 @@ void UVCCheatManager::ForceGC()
 	GEngine->ForceGarbageCollection(true);
 }
 
-void UVCCheatManager::AddItemToInventory(EItem Item, int32 Count)
+void UVCCheatManager::AddItemToInventory(FString Item, int32 Count)
 {
 	AVCCharacter* Character = Cast<AVCCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (!Character)
 		return;
 
-	const FPrimaryAssetId ItemID = FPrimaryAssetId{UVCAssetManager::InventoryItem, FName{"Axe"}};
+	const FPrimaryAssetId ItemID{UVCAssetManager::InventoryItem, FName{Item}};
 	Character->InventoryComp->AddItem(ItemID, Count);
 	Character->InventoryComp->UpdateInventoryUI();
 }

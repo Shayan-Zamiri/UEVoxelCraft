@@ -34,6 +34,8 @@ public:
 
 	void AddItem(const FPrimaryAssetId& InItemID, int32 Count = 1);
 
+	bool ContainsItem(const FPrimaryAssetId& InItemID) const;
+
 	void UpdateInventoryUI();
 
 protected:
