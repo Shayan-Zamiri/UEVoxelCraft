@@ -10,15 +10,7 @@ UVCItemDataAsset::UVCItemDataAsset() : MaxItemCount{1}, ItemType{UVCAssetManager
 {
 }
 
-UVCItemDataAsset::UVCItemDataAsset(const TSoftClassPtr<AActor>& InItemClass, const TSoftObjectPtr<UTexture2D>& InItemIcon,
-                                   const FText& ItemName, const FText& ItemDescription, const FPrimaryAssetType& InItemType,
-                                   int32 MaxItemCount)
-	: MaxItemCount{MaxItemCount}, ItemName{ItemName}, ItemDescription{ItemDescription}, ItemType{InItemType},
-	  ItemClass{InItemClass}, ItemIcon{InItemIcon}
-{
-}
-
-FPrimaryAssetId UVCItemDataAsset::GetPrimaryAssetId() const { return FPrimaryAssetId(ItemType, GetFName()); }
+FPrimaryAssetId UVCItemDataAsset::GetPrimaryAssetId() const { return FPrimaryAssetId(ItemType, ItemName); }
 
 // GETTERS & SETTERS
 
@@ -26,7 +18,7 @@ int32 UVCItemDataAsset::GetItemCount() const { return ItemCount; }
 
 void UVCItemDataAsset::SetItemCount(int32 InItemCount)
 {
-	checkf(InItemCount<=0, TEXT("InMaxItemCount is less than or equal to zero!"));
+	checkf(InItemCount>0, TEXT("InMaxItemCount is less than or equal to zero!"));
 	ItemCount = InItemCount;
 }
 
@@ -34,13 +26,13 @@ int32 UVCItemDataAsset::GetMaxItemCount() const { return MaxItemCount; }
 
 void UVCItemDataAsset::SetMaxItemCount(int32 InMaxItemCount)
 {
-	checkf(InMaxItemCount<=0, TEXT("InMaxItemCount is less than or equal to zero!"));
+	checkf(InMaxItemCount>0, TEXT("InMaxItemCount is less than or equal to zero!"));
 	MaxItemCount = InMaxItemCount;
 }
 
-const FText& UVCItemDataAsset::GetItemName() const { return ItemName; }
+const FName& UVCItemDataAsset::GetItemName() const { return ItemName; }
 
-void UVCItemDataAsset::SetItemName(const FText& InName) { ItemName = InName; }
+void UVCItemDataAsset::SetItemName(const FName& InName) { ItemName = InName; }
 
 const FText& UVCItemDataAsset::GetItemDescription() const { return ItemDescription; }
 

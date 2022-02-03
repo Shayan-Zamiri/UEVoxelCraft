@@ -9,6 +9,7 @@
 class UVCInventoryComponent;
 class UUniformGridPanel;
 class UVCItemDataAsset;
+class UVCItemSlotUI;
 
 UCLASS(Abstract)
 class UEVOXELCRAFT_API UVCInventoryUI : public UUserWidget
@@ -22,11 +23,8 @@ public:
 	// FUNCTIONS
 public:
 	void InitializeWidget();
-	
-	void UpdateUI();
 
-	UFUNCTION()
-	void OnLoadItem(FPrimaryAssetId ItemID, class UVCItemSlotUI* OutSlotUI) const;
+	void UpdateUI();
 
 	void SetOwner(UVCInventoryComponent* InOutOwner);
 protected:

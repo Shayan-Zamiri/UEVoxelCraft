@@ -6,9 +6,13 @@
 #include "GameFramework/CheatManager.h"
 #include "VCCheatManager.generated.h"
 
-/**
- * 
- */
+UENUM()
+enum class EItem : uint8
+{
+	Axe,
+	Shovel
+};
+
 UCLASS(Within= VCPlayerController)
 class UEVOXELCRAFT_API UVCCheatManager : public UCheatManager
 {
@@ -19,4 +23,7 @@ public:
 	/** Runs a garbage collection */
 	UFUNCTION(Exec)
 	void ForceGC();
+
+	UFUNCTION(Exec)
+	void AddItemToInventory(EItem Item, int32 Count);
 };

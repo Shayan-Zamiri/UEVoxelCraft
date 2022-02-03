@@ -6,6 +6,7 @@
 #include "VCPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
+#include "VCInventoryComponent.h"
 #include "VCVoxelChunk.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
@@ -16,9 +17,10 @@ AVCCharacter::AVCCharacter() : BlockSpawnDistance{300.0f}, VCPlayerController{nu
 
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	CameraComp->SetupAttachment(RootComponent);
-
 	// To rotate the camera with the movement of the mouse(which rotates player controller)
 	CameraComp->bUsePawnControlRotation = true;
+
+	InventoryComp = CreateDefaultSubobject<UVCInventoryComponent>(TEXT("InventoryComp"));
 }
 
 void AVCCharacter::BeginPlay()

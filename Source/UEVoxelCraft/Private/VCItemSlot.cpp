@@ -18,12 +18,12 @@ UVCItemSlot::UVCItemSlot(const FPrimaryAssetType& InSlotItemType, int32 SlotNumb
 
 // FUNCTIONS
 
-bool UVCItemSlot::IsSlotValid() const { return SlotNumber > 0 && SlotItemType.IsValid(); }
+bool UVCItemSlot::IsSlotValid() const { return SlotNumber >= 0 && SlotItemType.IsValid(); }
 
 bool UVCItemSlot::IsSlotEmpty() const
 {
 	checkf(IsSlotValid(), TEXT("slot number%d isn't valid"), SlotNumber);
-	return SlotItemCount == 0 && IsValid(Item);
+	return SlotItemCount == 0 && !IsValid(Item);
 }
 
 // GETTERS & SETTERS

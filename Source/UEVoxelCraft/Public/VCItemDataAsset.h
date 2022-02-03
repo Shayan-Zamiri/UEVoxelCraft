@@ -14,8 +14,6 @@ class UEVOXELCRAFT_API UVCItemDataAsset : public UPrimaryDataAsset
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
 	UVCItemDataAsset();
-	UVCItemDataAsset(const TSoftClassPtr<AActor>& InItemClass, const TSoftObjectPtr<UTexture2D>& InItemIcon,
-	                 const FText& ItemName, const FText& ItemDescription, const FPrimaryAssetType& InItemType, int32 MaxItemCount);
 
 	virtual ~UVCItemDataAsset() override = default;
 
@@ -37,10 +35,10 @@ public:
 	void SetMaxItemCount(int32 InMaxItemCount);
 
 	UFUNCTION(BlueprintGetter)
-	const FText& GetItemName() const;
+	const FName& GetItemName() const;
 
 	UFUNCTION(BlueprintSetter)
-	void SetItemName(const FText& InName);
+	void SetItemName(const FName& InName);
 
 	UFUNCTION(BlueprintGetter)
 	const FText& GetItemDescription() const;
@@ -77,7 +75,7 @@ protected:
 	int32 MaxItemCount;
 
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemName", BlueprintSetter= "SetItemName", Category= "Properties")
-	FText ItemName;
+	FName ItemName;
 
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetItemDescription", BlueprintSetter= "SetItemDescription", Category= "Properties")
 	FText ItemDescription;

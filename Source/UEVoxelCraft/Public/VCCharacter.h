@@ -10,6 +10,7 @@
 class UCameraComponent;
 class AVCPlayerController;
 class AVCVoxelChunk;
+class UVCInventoryComponent;
 
 UCLASS()
 class AVCCharacter : public ACharacter
@@ -43,6 +44,13 @@ private:
 	AVCVoxelChunk* LineTraceChunk(const FVector& InTargetPoint, FVector& OutLocation, FVector& OutNormal) const;
 
 	// PROPERTIES
+public:
+	UPROPERTY(EditAnywhere, Category= "Properties|Components")
+	UCameraComponent* CameraComp;
+
+	UPROPERTY(EditAnywhere, Category= "Properties|Components")
+	UVCInventoryComponent* InventoryComp;
+
 protected:
 	/** This is just for test, we will add inventory */
 	UPROPERTY(EditAnywhere, Category= "Properties")
@@ -53,7 +61,4 @@ protected:
 
 private:
 	TWeakObjectPtr<AVCPlayerController> VCPlayerController;
-
-	UPROPERTY(EditAnywhere, Category= "Properties|Components")
-	UCameraComponent* CameraComp;
 };

@@ -36,6 +36,29 @@ void UVCInventoryComponent::BeginPlay()
 
 // FUNCTIONS
 
+void UVCInventoryComponent::AddItem(const FPrimaryAssetId& InItemID, int32 Count)
+{
+	UVCItemSlot* Slot = FindAppropriateSlot(InItemID);
+	if (!Slot)
+		return;
+
+	if (InventoryData.Contains(InItemID))
+	{
+		UVCItemDataAsset* Item = InventoryData.FindChecked(InItemID);
+		Item->SetItemCount(Item->GetItemCount() + Count);
+		Slot->SetSlotItemCount(Count);
+	}
+	else
+	{
+		LoadAndAddItem(InItemID, Slot->GetSlotNumber(), Count);
+	}
+}
+
+void UVCInventoryComponent::UpdateInventoryUI()
+{
+	InventoryUI->UpdateUI();
+}
+
 void UVCInventoryComponent::DecreaseItemSlotCount(int32 SlotNumber, int32 Count)
 {
 	UVCItemSlot& Slot = GetSlot(SlotNumber);
@@ -88,7 +111,7 @@ UVCItemSlot* UVCInventoryComponent::FindAppropriateSlot(const FPrimaryAssetId& A
 			break;
 		}
 		// Appropriate Empty Slot
-		if (!bIsEmptySlotFounded && It->GetSlotItemType() == AssetID.PrimaryAssetType && IsSlotEmpty(It->GetSlotNumber()))
+		if (!bIsEmptySlotFounded && It->GetSlotItemType() == AssetID.PrimaryAssetType && It->IsSlotEmpty())
 		{
 			ReturnSlot = It;
 			bIsEmptySlotFounded = true;
@@ -121,24 +144,45 @@ const UVCItemDataAsset* UVCInventoryComponent::GetItem(int32 SlotNumber)
 	return GetSlot(SlotNumber).GetItem();
 }
 
-void UVCInventoryComponent::AddItemToInventoryData(UVCItemDataAsset* InOutItemDA)
+void UVCInventoryComponent::AddItemToInventoryData(const FPrimaryAssetId& InItemID, UVCItemDataAsset* InOutItemDA)
 {
-	check(IsValid(InOutItemDA));
-	InventoryData.Add(InOutItemDA);
+	check(!InventoryData.Contains(InItemID));
+	InventoryData.Add(InItemID, InOutItemDA);
 }
 
-void UVCInventoryComponent::RemoveItemFromInventoryData(UVCItemDataAsset* InOutItemDA, int32 Count)
+void UVCInventoryComponent::RemoveItemFromInventoryData(const FPrimaryAssetId& InItemID, int32 Count)
 {
-	check(IsValid(InOutItemDA));
-	checkf(InventoryData.Contains(InOutItemDA), TEXT("ItemDataAsset isn't in the inventory data"));
-	if (InOutItemDA->GetItemCount() - Count <= 0)
+	UVCItemDataAsset** PointerToItem = InventoryData.Find(InItemID);
+	if (!PointerToItem)
+		return;
+
+	UVCItemDataAsset* Item = *PointerToItem;
+
+	if (Item->GetItemCount() - Count <= 0)
 	{
-		InventoryData.Remove(InOutItemDA);
+		InventoryData.Remove(InItemID);
 	}
 	else
 	{
-		InOutItemDA->SetItemCount(InOutItemDA->GetItemCount() - Count);
+		Item->SetItemCount(Item->GetItemCount() - Count);
 	}
+}
+
+void UVCInventoryComponent::LoadAndAddItem(const FPrimaryAssetId& InItemID, int32 SlotNumber, int32 Count)
+{
+	UVCAssetManager& AssetManager = UVCAssetManager::Get();
+	const FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &UVCInventoryComponent::OnLoadItem, InItemID, SlotNumber,
+	                                                                        Count);
+	AssetManager.LoadPrimaryAsset(InItemID, TArray<FName>{"UI", "Game"}, Delegate);
+}
+
+void UVCInventoryComponent::OnLoadItem(FPrimaryAssetId ItemID, int32 SlotNumber, int32 Count)
+{
+	UVCItemDataAsset* Item = Cast<UVCItemDataAsset>(UVCAssetManager::Get().GetPrimaryAssetObject(ItemID));
+	checkf(IsValid(Item),TEXT("Item isn't load"))
+	Item->SetItemCount(Count);
+	AddItemToInventoryData(ItemID, Item);
+	InsertInSlot(SlotNumber, Count, Item);
 }
 
 void UVCInventoryComponent::InventorySlotsInitializer()

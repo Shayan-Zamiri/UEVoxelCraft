@@ -32,6 +32,10 @@ public:
 
 	const UVCItemDataAsset* GetItem(int32 SlotNumber);
 
+	void AddItem(const FPrimaryAssetId& InItemID, int32 Count = 1);
+
+	void UpdateInventoryUI();
+
 protected:
 	/** Pass 0 to make the slot empty */
 	void DecreaseItemSlotCount(int32 SlotNumber, int32 Count = 1);
@@ -54,9 +58,14 @@ protected:
 
 	bool IsSlotEmpty(int32 SlotNumber);
 
-	void AddItemToInventoryData(UVCItemDataAsset* InOutItemDA);
+	void AddItemToInventoryData(const FPrimaryAssetId& InItemID, UVCItemDataAsset* InOutItemDA);
 
-	void RemoveItemFromInventoryData(UVCItemDataAsset* InOutItemDA, int32 Count = 1);
+	void RemoveItemFromInventoryData(const FPrimaryAssetId& InItemID, int32 Count = 1);
+
+	void LoadAndAddItem(const FPrimaryAssetId& InItemID, int32 SlotNumber, int32 Count = 1);
+
+	UFUNCTION()
+	void OnLoadItem(FPrimaryAssetId ItemID, int32 SlotNumber, int32 Count);
 
 private:
 	/** Always ensure that we have made slots in the amount of SlotCount in the constructor */
@@ -79,7 +88,7 @@ protected:
 	UVCInventoryUI* InventoryUI;
 
 	UPROPERTY(VisibleAnywhere, Instanced, Category= "Properties")
-	TSet<UVCItemDataAsset*> InventoryData;
+	TMap<FPrimaryAssetId, UVCItemDataAsset*> InventoryData;
 
 	UPROPERTY(VisibleAnywhere, Instanced, Category= "Properties")
 	TArray<UVCItemSlot*> InventorySlots;
