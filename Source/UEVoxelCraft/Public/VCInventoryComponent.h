@@ -38,6 +38,8 @@ public:
 
 	void UpdateInventoryUI();
 
+	void UpdateInventoryUIAt(const int Index);
+
 	void ShowInventory();
 	
 	void HideInventory();
@@ -72,6 +74,8 @@ protected:
 
 	UFUNCTION()
 	void OnLoadItem(FPrimaryAssetId ItemID, int32 SlotNumber, int32 Count);
+
+	void SetupUI();
 
 private:
 	/** Always ensure that we have made slots in the amount of SlotCount in the constructor */

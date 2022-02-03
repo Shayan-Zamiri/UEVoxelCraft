@@ -26,6 +26,8 @@ public:
 
 	void UpdateUI();
 
+	void UpdateUIAt(const int Index);
+
 	void SetOwner(UVCInventoryComponent* InOutOwner);
 protected:
 	// PROPERTIES

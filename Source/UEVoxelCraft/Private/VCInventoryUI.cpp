@@ -54,17 +54,22 @@ void UVCInventoryUI::UpdateUI()
 {
 	for (int Index = 0; Index < SlotCount; ++Index)
 	{
-		UVCItemSlotUI* SlotUI = Cast<UVCItemSlotUI>(GridPanel->GetChildAt(Index));
-		if (SlotUI)
+		UpdateUIAt(Index);
+	}
+}
+
+void UVCInventoryUI::UpdateUIAt(const int Index)
+{
+	UVCItemSlotUI* SlotUI = Cast<UVCItemSlotUI>(GridPanel->GetChildAt(Index));
+	if (SlotUI)
+	{
+		SlotUI->SlotNumber->SetText(FText::AsNumber(Index + 1));
+		const UVCItemDataAsset* Item = InventoryCompOwner.Get()->GetItem(Index);
+		if (IsValid(Item))
 		{
-			SlotUI->SlotNumber->SetText(FText::AsNumber(Index + 1));
-			const UVCItemDataAsset* Item = InventoryCompOwner.Get()->GetItem(Index);
-			if (IsValid(Item))
-			{
-				SlotUI->ItemCount->SetText(FText::AsNumber(Item->GetItemCount()));
-				SlotUI->SetToolTipText(Item->GetItemDescription());
-				SlotUI->ItemIcon->SetBrushFromTexture(Item->GetItemIcon().Get(), true);
-			}
+			SlotUI->ItemCount->SetText(FText::AsNumber(Item->GetItemCount()));
+			SlotUI->SetToolTipText(Item->GetItemDescription());
+			SlotUI->ItemIcon->SetBrushFromTexture(Item->GetItemIcon().Get(), true);
 		}
 	}
 }

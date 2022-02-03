@@ -25,11 +25,9 @@ UVCInventoryComponent::~UVCInventoryComponent()
 void UVCInventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	InventoryUI = Cast<UVCInventoryUI>(CreateWidget(GetWorld(), InventoryUIClass,TEXT("InventoryUI")));
-	check(InventoryUI);
-	InventoryUI->SetOwner(this);
-	InventoryUI->InitializeWidget();
-	InventoryUI->UpdateUI();
+
+	SetupUI();
+	UpdateInventoryUI();
 }
 
 // FUNCTIONS
@@ -60,6 +58,11 @@ bool UVCInventoryComponent::ContainsItem(const FPrimaryAssetId& InItemID) const
 void UVCInventoryComponent::UpdateInventoryUI()
 {
 	InventoryUI->UpdateUI();
+}
+
+void UVCInventoryComponent::UpdateInventoryUIAt(const int Index)
+{
+	InventoryUI->UpdateUIAt(Index);
 }
 
 void UVCInventoryComponent::ShowInventory()
@@ -200,7 +203,15 @@ void UVCInventoryComponent::OnLoadItem(FPrimaryAssetId ItemID, int32 SlotNumber,
 	Item->SetItemCount(Count);
 	AddItemToInventoryData(ItemID, Item);
 	InsertInSlot(SlotNumber, Count, Item);
-	UpdateInventoryUI();
+	UpdateInventoryUIAt(SlotNumber);
+}
+
+void UVCInventoryComponent::SetupUI()
+{
+	InventoryUI = Cast<UVCInventoryUI>(CreateWidget(GetWorld(), InventoryUIClass,TEXT("InventoryUI")));
+	check(InventoryUI);
+	InventoryUI->SetOwner(this);
+	InventoryUI->InitializeWidget();
 }
 
 void UVCInventoryComponent::InventorySlotsInitializer()
