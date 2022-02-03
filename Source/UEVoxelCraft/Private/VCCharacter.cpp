@@ -8,6 +8,7 @@
 #include "DrawDebugHelpers.h"
 #include "VCInventoryComponent.h"
 #include "VCVoxelChunk.h"
+#include "GameFramework/HUD.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
@@ -39,6 +40,7 @@ void AVCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("AddBlock", IE_Pressed, this, &AVCCharacter::AddBlock);
 	PlayerInputComponent->BindAction("RemoveBlock", IE_Pressed, this, &AVCCharacter::RemoveBlock);
+	PlayerInputComponent->BindAction("Inventory", IE_Pressed, this, &AVCCharacter::ShowHideInventory);
 
 	// Axis
 	PlayerInputComponent->BindAxis("MoveForward", this, &AVCCharacter::MoveForward);
@@ -73,6 +75,23 @@ void AVCCharacter::RemoveBlock()
 void AVCCharacter::MoveForward(float InVal) { AddMovementInput(GetActorForwardVector(), InVal); }
 
 void AVCCharacter::MoveRight(float InVal) { AddMovementInput(GetActorRightVector(), InVal); }
+
+void AVCCharacter::ShowHideInventory()
+{
+	static bool IsToggled = false;
+
+	if (!IsToggled)
+	{
+		InventoryComp->ShowInventory();
+		IsToggled = true;
+	}
+	else
+	{
+		InventoryComp->HideInventory();
+		IsToggled = false;
+	}
+	VCPlayerController.Get()->GetHUD()->ShowHUD();
+}
 
 AVCVoxelChunk* AVCCharacter::LineTraceChunk(const FVector& InTargetPoint, FVector& OutLocation, FVector& OutNormal) const
 {

@@ -40,6 +40,9 @@ private:
 	UFUNCTION()
 	void MoveRight(float InVal);
 
+	UFUNCTION()
+	void ShowHideInventory();
+
 	/** returns nullptr if doesn't hit anything */
 	AVCVoxelChunk* LineTraceChunk(const FVector& InTargetPoint, FVector& OutLocation, FVector& OutNormal) const;
 

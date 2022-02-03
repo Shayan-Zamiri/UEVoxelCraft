@@ -38,6 +38,10 @@ public:
 
 	void UpdateInventoryUI();
 
+	void ShowInventory();
+	
+	void HideInventory();
+
 protected:
 	/** Pass 0 to make the slot empty */
 	void DecreaseItemSlotCount(int32 SlotNumber, int32 Count = 1);

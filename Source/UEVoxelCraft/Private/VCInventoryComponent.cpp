@@ -30,7 +30,6 @@ void UVCInventoryComponent::BeginPlay()
 	InventoryUI->SetOwner(this);
 	InventoryUI->InitializeWidget();
 	InventoryUI->UpdateUI();
-	InventoryUI->AddToViewport();
 }
 
 // FUNCTIONS
@@ -51,8 +50,6 @@ void UVCInventoryComponent::AddItem(const FPrimaryAssetId& InItemID, int32 Count
 	{
 		LoadAndAddItem(InItemID, Slot->GetSlotNumber(), Count);
 	}
-
-	UpdateInventoryUI();
 }
 
 bool UVCInventoryComponent::ContainsItem(const FPrimaryAssetId& InItemID) const
@@ -63,6 +60,16 @@ bool UVCInventoryComponent::ContainsItem(const FPrimaryAssetId& InItemID) const
 void UVCInventoryComponent::UpdateInventoryUI()
 {
 	InventoryUI->UpdateUI();
+}
+
+void UVCInventoryComponent::ShowInventory()
+{
+	InventoryUI->AddToViewport();
+}
+
+void UVCInventoryComponent::HideInventory()
+{
+	InventoryUI->RemoveFromViewport();
 }
 
 void UVCInventoryComponent::DecreaseItemSlotCount(int32 SlotNumber, int32 Count)
