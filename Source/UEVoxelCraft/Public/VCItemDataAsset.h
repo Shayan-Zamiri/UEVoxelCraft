@@ -17,7 +17,7 @@ public:
 
 	virtual ~UVCItemDataAsset() override = default;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual FPrimaryAssetId GetPrimaryAssetId() const override;
 
 	// GETTERS & SETTERS
