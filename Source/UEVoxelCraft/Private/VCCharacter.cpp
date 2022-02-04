@@ -12,7 +12,7 @@
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 
-AVCCharacter::AVCCharacter() : BlockSpawnDistance{300.0f}, VCPlayerController{nullptr}
+AVCCharacter::AVCCharacter() : BlockSpawnDistance{300.0f}, bInUI{false}, VCPlayerController{nullptr}
 {
 	PrimaryActorTick.bCanEverTick = false;
 
@@ -45,8 +45,8 @@ void AVCCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	// Axis
 	PlayerInputComponent->BindAxis("MoveForward", this, &AVCCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AVCCharacter::MoveRight);
-	PlayerInputComponent->BindAxis("Lookup", this, &ACharacter::AddControllerPitchInput);
-	PlayerInputComponent->BindAxis("Turn", this, &ACharacter::AddControllerYawInput);
+	PlayerInputComponent->BindAxis("Lookup", this, &AVCCharacter::Turn);
+	PlayerInputComponent->BindAxis("Turn", this, &AVCCharacter::LookUp);
 }
 
 // FUNCTIONS
@@ -76,19 +76,35 @@ void AVCCharacter::MoveForward(float InVal) { AddMovementInput(GetActorForwardVe
 
 void AVCCharacter::MoveRight(float InVal) { AddMovementInput(GetActorRightVector(), InVal); }
 
+void AVCCharacter::Turn(float InVal)
+{
+	if (!bInUI)
+	{
+		AddControllerPitchInput(InVal);
+	}
+}
+
+void AVCCharacter::LookUp(float InVal)
+{
+	if (!bInUI)
+	{
+		AddControllerYawInput(InVal);
+	}
+}
+
 void AVCCharacter::ShowHideInventory()
 {
-	static bool IsToggled = false;
-
-	if (!IsToggled)
+	if (!bInUI)
 	{
 		InventoryComp->ShowInventory();
-		IsToggled = true;
+		bInUI = true;
+		VCPlayerController->SetShowMouseCursor(true);
 	}
 	else
 	{
 		InventoryComp->HideInventory();
-		IsToggled = false;
+		bInUI = false;
+		VCPlayerController->SetShowMouseCursor(false);
 	}
 	VCPlayerController.Get()->GetHUD()->ShowHUD();
 }

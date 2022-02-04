@@ -41,6 +41,12 @@ private:
 	void MoveRight(float InVal);
 
 	UFUNCTION()
+	void Turn(float InVal);
+
+	UFUNCTION()
+	void LookUp(float InVal);
+
+	UFUNCTION()
 	void ShowHideInventory();
 
 	/** returns nullptr if doesn't hit anything */
@@ -61,6 +67,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category= "Properties")
 	float BlockSpawnDistance;
+
+	UPROPERTY(EditAnywhere, Category= "Properties")
+	bool bInUI;
 
 private:
 	TWeakObjectPtr<AVCPlayerController> VCPlayerController;
