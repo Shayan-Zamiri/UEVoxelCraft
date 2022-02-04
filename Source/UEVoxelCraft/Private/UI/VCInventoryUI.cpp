@@ -36,15 +36,15 @@ void UVCInventoryUI::InitializeWidget()
 	{
 		for (uint8 Col = 0; Col < Columns; ++Col)
 		{
-			if (Row + (Col * RowCount) == SlotCount)
-			{
+			const uint8 Index = Col + (Row * Columns);
+			if (Index == SlotCount)
 				return;
-			}
+
 			UVCItemSlotUI* ItemSlotUI = Cast<UVCItemSlotUI>(CreateWidget(GridPanel, SlotClass));
 			if (ItemSlotUI)
 			{
-				ItemSlotUI->ItemSlotOwner = &InventoryCompOwner->GetSlot(Row + (Col * RowCount));
-				ItemSlotUI->SlotNumber->SetText(FText::AsNumber(Row + (Col * RowCount) + 1));
+				ItemSlotUI->ItemSlotOwner = &InventoryCompOwner->GetSlot(Index);
+				ItemSlotUI->SlotNumber->SetText(FText::AsNumber(Index + 1));
 				UUniformGridSlot* GridSlot = GridPanel->AddChildToUniformGrid(ItemSlotUI, Row, Col);
 				GridSlot->SetVerticalAlignment(VAlign_Center);
 				GridSlot->SetHorizontalAlignment(HAlign_Center);
