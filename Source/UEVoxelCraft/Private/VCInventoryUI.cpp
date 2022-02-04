@@ -4,6 +4,7 @@
 #include "VCInventoryUI.h"
 #include "VCInventoryComponent.h"
 #include "VCItemDataAsset.h"
+#include "VCItemSlot.h"
 #include "VCItemSlotUI.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
@@ -63,13 +64,17 @@ void UVCInventoryUI::UpdateUIAt(const int Index)
 	UVCItemSlotUI* SlotUI = Cast<UVCItemSlotUI>(GridPanel->GetChildAt(Index));
 	if (SlotUI)
 	{
-		SlotUI->SlotNumber->SetText(FText::AsNumber(Index + 1));
-		const UVCItemDataAsset* Item = InventoryCompOwner.Get()->GetItem(Index);
-		if (IsValid(Item))
+		const UVCItemSlot& ItemSlot = InventoryCompOwner.Get()->GetSlot(Index);
+		SlotUI->ItemCount->SetText(FText::AsNumber(ItemSlot.GetSlotItemCount()));
+		if (IsValid(ItemSlot.GetItem()))
 		{
-			SlotUI->ItemCount->SetText(FText::AsNumber(Item->GetItemCount()));
-			SlotUI->SetToolTipText(Item->GetItemDescription());
-			SlotUI->ItemIcon->SetBrushFromTexture(Item->GetItemIcon(), true);
+			SlotUI->SetToolTipText(ItemSlot.GetItem()->GetItemDescription());
+			SlotUI->ItemIcon->SetBrushFromTexture(ItemSlot.GetItem()->GetItemIcon(), true);
+		}
+		else
+		{
+			SlotUI->SetToolTipText(FText::FromString("Empty Slot"));
+			SlotUI->ItemIcon->SetBrushFromTexture(nullptr, true);
 		}
 	}
 }

@@ -43,6 +43,7 @@ void UVCInventoryComponent::AddItem(const FPrimaryAssetId& InItemID, int32 Count
 		UVCItemDataAsset* Item = InventoryData.FindChecked(InItemID);
 		Item->SetItemCount(Item->GetItemCount() + Count);
 		Slot->SetSlotItemCount(Count);
+		UpdateInventoryUIAt(Slot->GetSlotNumber());
 	}
 	else
 	{
@@ -50,27 +51,38 @@ void UVCInventoryComponent::AddItem(const FPrimaryAssetId& InItemID, int32 Count
 	}
 }
 
+void UVCInventoryComponent::RemoveItemFromSlot(int32 SlotNumber)
+{
+	UVCItemSlot& Slot = GetSlot(SlotNumber);
+	if (Slot.IsSlotEmpty())
+		return;
+
+	RemoveItemFromInventoryData(Slot.GetItem()->GetPrimaryAssetId(), Slot.GetSlotItemCount());
+	Slot.EmptySlot();
+	UpdateInventoryUIAt(Slot.GetSlotNumber());
+}
+
 bool UVCInventoryComponent::ContainsItem(const FPrimaryAssetId& InItemID) const
 {
 	return InventoryData.Contains(InItemID);
 }
 
-void UVCInventoryComponent::UpdateInventoryUI()
+void UVCInventoryComponent::UpdateInventoryUI() const
 {
 	InventoryUI->UpdateUI();
 }
 
-void UVCInventoryComponent::UpdateInventoryUIAt(const int Index)
+void UVCInventoryComponent::UpdateInventoryUIAt(const int Index) const
 {
 	InventoryUI->UpdateUIAt(Index);
 }
 
-void UVCInventoryComponent::ShowInventory()
+void UVCInventoryComponent::ShowInventory() const
 {
 	InventoryUI->AddToViewport();
 }
 
-void UVCInventoryComponent::HideInventory()
+void UVCInventoryComponent::HideInventory() const
 {
 	InventoryUI->RemoveFromViewport();
 }

@@ -34,11 +34,17 @@ void UVCItemSlot::SetSlotNumber(int32 InSlotNum) { SlotNumber = InSlotNum; }
 
 int32 UVCItemSlot::GetSlotMaxCount() const { return IsValid(Item) ? Item->GetMaxItemCount() : 0; }
 
+void UVCItemSlot::EmptySlot()
+{
+	SetSlotItemCount(0);
+	SetItem(nullptr);
+}
+
 int32 UVCItemSlot::GetSlotItemCount() const { return SlotItemCount; }
 
 void UVCItemSlot::SetSlotItemCount(int32 InSlotItemCount)
 {
-	SlotItemCount = InSlotItemCount < 0 ? 1 : InSlotItemCount;
+	SlotItemCount = FMath::Clamp(InSlotItemCount, 0, GetSlotMaxCount());
 	if (SlotItemCount == 0)
 		Item = nullptr;
 }

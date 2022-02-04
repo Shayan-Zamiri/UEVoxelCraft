@@ -16,6 +16,8 @@ class UEVOXELCRAFT_API UVCInventoryComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+	friend class UVCCheatManager;
+
 	// CTOR/DTOR & VIRTUAL FUNCTIONS
 public:
 	UVCInventoryComponent();
@@ -33,16 +35,20 @@ public:
 	const UVCItemDataAsset* GetItem(int32 SlotNumber);
 
 	void AddItem(const FPrimaryAssetId& InItemID, int32 Count = 1);
+	
+	void RemoveItemFromSlot(int32 SlotNumber);
 
 	bool ContainsItem(const FPrimaryAssetId& InItemID) const;
 
-	void UpdateInventoryUI();
+	UVCItemSlot& GetSlot(int32 SlotNumber);
 
-	void UpdateInventoryUIAt(const int Index);
+	void UpdateInventoryUI() const;
 
-	void ShowInventory();
-	
-	void HideInventory();
+	void UpdateInventoryUIAt(const int Index) const;
+
+	void ShowInventory() const;
+
+	void HideInventory() const;
 
 protected:
 	/** Pass 0 to make the slot empty */
@@ -59,8 +65,6 @@ protected:
 
 	/** Find the first Appropriate slot that can stack this item(AssetID = Name + Type), returns nullptr if it can't find anything. */
 	UVCItemSlot* FindAppropriateSlot(const FPrimaryAssetId& AssetID);
-
-	UVCItemSlot& GetSlot(int32 SlotNumber);
 
 	bool IsSlotValid(const UVCItemSlot* InItemSlot) const;
 

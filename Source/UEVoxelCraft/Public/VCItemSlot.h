@@ -32,6 +32,8 @@ public:
 
 	int32 GetSlotMaxCount() const;
 
+	void EmptySlot();
+
 	// GETTERS & SETTERS
 public:
 	UFUNCTION(BlueprintGetter)

@@ -21,5 +21,11 @@ public:
 	void AddItemToInventory(FString Item, int32 Count) const;
 
 	UFUNCTION(Exec)
-	void SpawnItem(int32 SlotNumber) const;
+	void SpawnItemFromInventory(int32 SlotNumber) const;
+
+	UFUNCTION(Exec)
+	void RemoveItemFromInventorySlot(int32 SlotNumber) const;
+
+	UFUNCTION(Exec)
+	void PrintInventoryData() const;
 };
