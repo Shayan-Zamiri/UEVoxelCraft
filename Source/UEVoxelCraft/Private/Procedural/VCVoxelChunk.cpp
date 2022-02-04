@@ -1,10 +1,10 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "VCVoxelChunk.h"
+#include "Procedural/VCVoxelChunk.h"
 #include "RuntimeMeshComponent.h"
 #include "VCGameInstance.h"
 #include "Providers/RuntimeMeshProviderStatic.h"
-#include "FastNoiseLite.h"
+#include "Procedural/FastNoiseLite.h"
 
 // STATICS
 

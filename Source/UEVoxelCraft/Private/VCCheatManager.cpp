@@ -3,8 +3,8 @@
 
 #include "VCCheatManager.h"
 #include "VCCharacter.h"
-#include "VCInventoryComponent.h"
-#include "VCItemDataAsset.h"
+#include "Inventory/VCInventoryComponent.h"
+#include "Inventory/VCItemDataAsset.h"
 #include "Kismet/GameplayStatics.h"
 
 // FUNCTIONS

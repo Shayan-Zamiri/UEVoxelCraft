@@ -1,10 +1,10 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "VCVoxelWorld.h"
+#include "Procedural/VCVoxelWorld.h"
+#include "Procedural/VCVoxelChunk.h"
 #include "VCTypes.h"
 #include "VCCharacter.h"
-#include "VCVoxelChunk.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
 

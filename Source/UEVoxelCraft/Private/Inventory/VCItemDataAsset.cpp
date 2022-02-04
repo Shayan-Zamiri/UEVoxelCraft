@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "VCItemDataAsset.h"
+#include "Inventory/VCItemDataAsset.h"
 #include "VCAssetManager.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS

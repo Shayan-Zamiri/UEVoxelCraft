@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "VCInventoryUI.h"
-#include "VCInventoryComponent.h"
-#include "VCItemDataAsset.h"
-#include "VCItemSlot.h"
-#include "VCItemSlotUI.h"
+#include "UI/VCInventoryUI.h"
+#include "UI/VCItemSlotUI.h"
+#include "Inventory/VCInventoryComponent.h"
+#include "Inventory/VCItemDataAsset.h"
+#include "Inventory/VCItemSlot.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/UniformGridPanel.h"

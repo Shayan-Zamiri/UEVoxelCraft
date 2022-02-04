@@ -6,8 +6,8 @@
 #include "VCPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
-#include "VCInventoryComponent.h"
-#include "VCVoxelChunk.h"
+#include "Inventory/VCInventoryComponent.h"
+#include "Procedural/VCVoxelChunk.h"
 #include "GameFramework/HUD.h"
 
 // CTOR/DTOR & VIRTUAL FUNCTIONS
