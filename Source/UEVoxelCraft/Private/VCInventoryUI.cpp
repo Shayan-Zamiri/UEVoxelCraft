@@ -64,6 +64,7 @@ void UVCInventoryUI::UpdateUIAt(const int Index)
 	UVCItemSlotUI* SlotUI = Cast<UVCItemSlotUI>(GridPanel->GetChildAt(Index));
 	if (SlotUI)
 	{
+		SlotUI->SlotNumber->SetText(FText::AsNumber(Index + 1));
 		const UVCItemSlot& ItemSlot = InventoryCompOwner.Get()->GetSlot(Index);
 		SlotUI->ItemCount->SetText(FText::AsNumber(ItemSlot.GetSlotItemCount()));
 		if (IsValid(ItemSlot.GetItem()))
