@@ -7,7 +7,7 @@
 
 class UVCItemDataAsset;
 
-UCLASS()
+UCLASS(BlueprintType)
 class UEVOXELCRAFT_API UVCItemSlot : public UObject
 {
 	GENERATED_BODY()
@@ -29,6 +29,7 @@ public:
 	bool IsSlotEmpty() const;
 
 	/** If you want to fill the slot by the item that is currently held in the slot, pass nothing*/
+	UFUNCTION(BlueprintCallable, Category= "Functions")
 	int32 GetSlotMaxCount() const;
 
 	void EmptySlot();

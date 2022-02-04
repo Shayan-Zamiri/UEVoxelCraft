@@ -93,7 +93,10 @@ void UVCInventoryComponent::DecreaseItemSlotCount(int32 SlotNumber, int32 Count)
 	if (Slot.IsSlotEmpty())
 		return;
 
-	Slot.SetSlotItemCount(Count == 0 ? 0 : Slot.GetSlotItemCount() - Count);
+	if (Count <= 0 || Slot.GetSlotItemCount() - Count <= 0)
+		Slot.EmptySlot();
+	else
+		Slot.SetSlotItemCount(Slot.GetSlotItemCount() - Count);
 }
 
 void UVCInventoryComponent::IncreaseItemSlotCount(int32 SlotNumber, int32 Count)
@@ -105,11 +108,26 @@ void UVCInventoryComponent::IncreaseItemSlotCount(int32 SlotNumber, int32 Count)
 	Slot.SetSlotItemCount(Count == 0 ? Slot.GetItem()->GetMaxItemCount() : Slot.GetSlotItemCount() + Count);
 }
 
-void UVCInventoryComponent::InsertInSlot(int32 SlotNumber, int32 Count, UVCItemDataAsset* InItem)
+void UVCInventoryComponent::InsertInSlot(int32 SlotNumber, int32 Count, const UVCItemDataAsset* InItem)
 {
 	check(IsValid(InItem));
 	GetSlot(SlotNumber).SetItem(InItem);
 	GetSlot(SlotNumber).SetSlotItemCount(Count);
+}
+
+void UVCInventoryComponent::SwapSlots(int32 FirstSlotNumber, int32 SecondSlotNumber)
+{
+	UVCItemSlot& FirstSlot = GetSlot(FirstSlotNumber);
+	UVCItemSlot& SecondSlot = GetSlot(SecondSlotNumber);
+
+	const UVCItemDataAsset* TempItemDA = FirstSlot.GetItem();
+	const int32 TempSlotItemCount = FirstSlot.GetSlotItemCount();
+
+	FirstSlot.SetItem(SecondSlot.GetItem());
+	FirstSlot.SetSlotItemCount(SecondSlot.GetSlotItemCount());
+
+	SecondSlot.SetItem(TempItemDA);
+	SecondSlot.SetSlotItemCount(TempSlotItemCount);
 }
 
 UVCItemSlot* UVCInventoryComponent::FindEmptySlot()
@@ -174,7 +192,6 @@ const UVCItemDataAsset* UVCInventoryComponent::GetItem(int32 SlotNumber)
 
 void UVCInventoryComponent::AddItemToInventoryData(const FPrimaryAssetId& InItemID, UVCItemDataAsset* InOutItemDA)
 {
-	// check(!InventoryData.Contains(InItemID));
 	InventoryData.Add(InItemID, InOutItemDA);
 }
 

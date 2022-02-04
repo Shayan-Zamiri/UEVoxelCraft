@@ -16,19 +16,11 @@ FPrimaryAssetId UVCItemDataAsset::GetPrimaryAssetId() const { return FPrimaryAss
 
 int32 UVCItemDataAsset::GetItemCount() const { return ItemCount; }
 
-void UVCItemDataAsset::SetItemCount(int32 InItemCount)
-{
-	checkf(InItemCount>0, TEXT("InMaxItemCount is less than or equal to zero!"));
-	ItemCount = InItemCount;
-}
+void UVCItemDataAsset::SetItemCount(int32 InItemCount) { ItemCount = InItemCount < 0 ? 0 : InItemCount; }
 
 int32 UVCItemDataAsset::GetMaxItemCount() const { return MaxItemCount; }
 
-void UVCItemDataAsset::SetMaxItemCount(int32 InMaxItemCount)
-{
-	checkf(InMaxItemCount>0, TEXT("InMaxItemCount is less than or equal to zero!"));
-	MaxItemCount = InMaxItemCount;
-}
+void UVCItemDataAsset::SetMaxItemCount(int32 InMaxItemCount) { MaxItemCount = InMaxItemCount < 0 ? 1 : InMaxItemCount; }
 
 const FName& UVCItemDataAsset::GetItemName() const { return ItemName; }
 

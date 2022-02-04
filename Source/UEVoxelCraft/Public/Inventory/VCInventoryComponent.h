@@ -37,7 +37,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddItem(const FPrimaryAssetId& InItemID, int32 Count = 1);
-	
+
 	void RemoveItemFromSlot(int32 SlotNumber);
 
 	bool ContainsItem(const FPrimaryAssetId& InItemID) const;
@@ -59,13 +59,19 @@ public:
 
 protected:
 	/** Pass 0 to make the slot empty */
+	UFUNCTION(BlueprintCallable, Category= "Functions")
 	void DecreaseItemSlotCount(int32 SlotNumber, int32 Count = 1);
 
 	/** Pass 0 to make the slot full */
+	UFUNCTION(BlueprintCallable, Category= "Functions")
 	void IncreaseItemSlotCount(int32 SlotNumber, int32 Count = 1);
 
 	/** Forcibly changes an Item in an ItemSlot */
-	void InsertInSlot(int32 SlotNumber, int32 Count, UVCItemDataAsset* InItem);
+	UFUNCTION(BlueprintCallable, Category= "Functions")
+	void InsertInSlot(int32 SlotNumber, int32 Count, const UVCItemDataAsset* InItem);
+
+	UFUNCTION(BlueprintCallable, Category= "Functions")
+	void SwapSlots(int32 FirstSlotNumber, int32 SecondSlotNumber);
 
 	/** Find the first empty slot, returns nullptr if it can't find anything */
 	UVCItemSlot* FindEmptySlot();

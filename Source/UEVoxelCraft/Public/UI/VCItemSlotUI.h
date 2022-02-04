@@ -8,6 +8,7 @@
 
 class UImage;
 class UTextBlock;
+class UVCItemSlot;
 
 UCLASS()
 class UEVOXELCRAFT_API UVCItemSlotUI : public UUserWidget
@@ -26,10 +27,13 @@ public:
 public:
 	UPROPERTY(BlueprintReadWrite, Category= "Properties", meta= (BindWidget))
 	UTextBlock* SlotNumber;
-	
+
 	UPROPERTY(BlueprintReadWrite, Category= "Properties", meta= (BindWidget))
 	UTextBlock* ItemCount;
 
 	UPROPERTY(BlueprintReadWrite, Category= "Properties", meta= (BindWidget))
 	UImage* ItemIcon;
+
+	UPROPERTY(BlueprintReadWrite, Category= "Properties")
+	UVCItemSlot* ItemSlotOwner;
 };

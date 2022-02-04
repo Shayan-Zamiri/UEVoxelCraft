@@ -40,10 +40,12 @@ void UVCInventoryUI::InitializeWidget()
 			{
 				return;
 			}
-			UUserWidget* ItemSlot = CreateWidget(GridPanel, SlotClass);
-			if (ItemSlot)
+			UVCItemSlotUI* ItemSlotUI = Cast<UVCItemSlotUI>(CreateWidget(GridPanel, SlotClass));
+			if (ItemSlotUI)
 			{
-				UUniformGridSlot* GridSlot = GridPanel->AddChildToUniformGrid(ItemSlot, Row, Col);
+				ItemSlotUI->ItemSlotOwner = &InventoryCompOwner->GetSlot(Row + (Col * RowCount));
+				ItemSlotUI->SlotNumber->SetText(FText::AsNumber(Row + (Col * RowCount) + 1));
+				UUniformGridSlot* GridSlot = GridPanel->AddChildToUniformGrid(ItemSlotUI, Row, Col);
 				GridSlot->SetVerticalAlignment(VAlign_Center);
 				GridSlot->SetHorizontalAlignment(HAlign_Center);
 			}
@@ -64,7 +66,6 @@ void UVCInventoryUI::UpdateUIAt(const int Index) const
 	UVCItemSlotUI* SlotUI = Cast<UVCItemSlotUI>(GridPanel->GetChildAt(Index));
 	if (SlotUI)
 	{
-		SlotUI->SlotNumber->SetText(FText::AsNumber(Index + 1));
 		const UVCItemSlot& ItemSlot = InventoryCompOwner.Get()->GetSlot(Index);
 		SlotUI->ItemCount->SetText(FText::AsNumber(ItemSlot.GetSlotItemCount()));
 		if (IsValid(ItemSlot.GetItem()))
