@@ -174,7 +174,7 @@ const UVCItemDataAsset* UVCInventoryComponent::GetItem(int32 SlotNumber)
 
 void UVCInventoryComponent::AddItemToInventoryData(const FPrimaryAssetId& InItemID, UVCItemDataAsset* InOutItemDA)
 {
-	check(!InventoryData.Contains(InItemID));
+	// check(!InventoryData.Contains(InItemID));
 	InventoryData.Add(InItemID, InOutItemDA);
 }
 

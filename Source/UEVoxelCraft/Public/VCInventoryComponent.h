@@ -40,10 +40,6 @@ public:
 	
 	void RemoveItemFromSlot(int32 SlotNumber);
 
-	/** Forcibly changes an Item in an ItemSlot */
-	UFUNCTION(BlueprintCallable)
-	void InsertInSlot(int32 SlotNumber, int32 Count, UVCItemDataAsset* InItem);
-
 	bool ContainsItem(const FPrimaryAssetId& InItemID) const;
 
 	UVCItemSlot& GetSlot(int32 SlotNumber);
@@ -58,12 +54,18 @@ public:
 
 	void HideInventory() const;
 
+	UFUNCTION(BlueprintCallable)
+	void LoadAndAddItem(const FPrimaryAssetId& InItemID, int32 SlotNumber, int32 Count = 1);
+
 protected:
 	/** Pass 0 to make the slot empty */
 	void DecreaseItemSlotCount(int32 SlotNumber, int32 Count = 1);
 
 	/** Pass 0 to make the slot full */
 	void IncreaseItemSlotCount(int32 SlotNumber, int32 Count = 1);
+
+	/** Forcibly changes an Item in an ItemSlot */
+	void InsertInSlot(int32 SlotNumber, int32 Count, UVCItemDataAsset* InItem);
 
 	/** Find the first empty slot, returns nullptr if it can't find anything */
 	UVCItemSlot* FindEmptySlot();
@@ -78,8 +80,6 @@ protected:
 	void AddItemToInventoryData(const FPrimaryAssetId& InItemID, UVCItemDataAsset* InOutItemDA);
 
 	void RemoveItemFromInventoryData(const FPrimaryAssetId& InItemID, int32 Count = 1);
-
-	void LoadAndAddItem(const FPrimaryAssetId& InItemID, int32 SlotNumber, int32 Count = 1);
 
 	UFUNCTION()
 	void OnLoadItem(FPrimaryAssetId ItemID, int32 SlotNumber, int32 Count);
