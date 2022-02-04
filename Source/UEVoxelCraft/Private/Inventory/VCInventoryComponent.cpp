@@ -41,8 +41,10 @@ void UVCInventoryComponent::AddItem(const FPrimaryAssetId& InItemID, int32 Count
 	if (InventoryData.Contains(InItemID))
 	{
 		UVCItemDataAsset* Item = InventoryData.FindChecked(InItemID);
-		Item->SetItemCount(Item->GetItemCount() + Count);
-		Slot->SetSlotItemCount(Count);
+		const int32 IncreasedAmount = FMath::Clamp(Slot->GetSlotItemCount() + Count, 0, Item->GetMaxItemCount());
+		Item->SetItemCount(IncreasedAmount);
+		Slot->SetItem(Item);
+		Slot->SetSlotItemCount(IncreasedAmount);
 		UpdateInventoryUIAt(Slot->GetSlotNumber());
 	}
 	else
@@ -229,9 +231,10 @@ void UVCInventoryComponent::OnLoadItem(FPrimaryAssetId ItemID, int32 SlotNumber,
 		return;
 
 	UVCItemDataAsset* Item = Cast<UVCItemDataAsset>(Object);
-	Item->SetItemCount(Count);
+	const int32 IncreasedAmount = FMath::Clamp(GetSlot(SlotNumber).GetSlotItemCount() + Count, 0, Item->GetMaxItemCount());
+	Item->SetItemCount(IncreasedAmount);
 	AddItemToInventoryData(ItemID, Item);
-	InsertInSlot(SlotNumber, Count, Item);
+	InsertInSlot(SlotNumber, IncreasedAmount, Item);
 	UpdateInventoryUIAt(SlotNumber);
 }
 
