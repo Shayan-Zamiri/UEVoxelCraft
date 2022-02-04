@@ -51,7 +51,7 @@ void UVCInventoryUI::InitializeWidget()
 	}
 }
 
-void UVCInventoryUI::UpdateUI()
+void UVCInventoryUI::UpdateUI() const
 {
 	for (int Index = 0; Index < SlotCount; ++Index)
 	{
@@ -59,7 +59,7 @@ void UVCInventoryUI::UpdateUI()
 	}
 }
 
-void UVCInventoryUI::UpdateUIAt(const int Index)
+void UVCInventoryUI::UpdateUIAt(const int Index) const
 {
 	UVCItemSlotUI* SlotUI = Cast<UVCItemSlotUI>(GridPanel->GetChildAt(Index));
 	if (SlotUI)

@@ -16,8 +16,6 @@ class UEVOXELCRAFT_API UVCItemSlot : public UObject
 public:
 	UVCItemSlot();
 
-	UVCItemSlot(const FPrimaryAssetType& InSlotItemType, int32 SlotNumber);
-
 	virtual ~UVCItemSlot() override = default;
 
 	// FUNCTIONS
@@ -30,9 +28,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category= "Functions")
 	bool IsSlotEmpty() const;
 
+	/** If you want to fill the slot by the item that is currently held in the slot, pass nothing*/
 	int32 GetSlotMaxCount() const;
 
 	void EmptySlot();
+
+	/** If you want to fill the slot by the item that is currently held in the slot, pass nothing*/
+	void FillSlot(const UVCItemDataAsset* InItemDA = nullptr);
 
 	// GETTERS & SETTERS
 public:
@@ -58,20 +60,22 @@ public:
 	const UVCItemDataAsset* GetItem() const;
 
 	UFUNCTION(BlueprintSetter)
-	void SetItem(const UVCItemDataAsset* InItemDataAsset);
+	void SetItem(const UVCItemDataAsset* InItemDA);
 
 	// PROPERTIES
 protected:
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotNumber", BlueprintSetter= "SetSlotNumber", Category= "Properties|ItemSlot")
 	int32 SlotNumber;
 
+	/** Number of item than is held in the slot */
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotItemCount", BlueprintSetter= "SetSlotItemCount", Category= "Properties|ItemSlot")
 	int32 SlotItemCount;
 
+	/** Item type than can be held in the slot */
 	UPROPERTY(EditAnywhere, BlueprintGetter= "GetSlotItemType", BlueprintSetter= "SetSlotItemType", Category= "Properties|ItemSlot")
 	FPrimaryAssetType SlotItemType;
 
-	/** Weak reference to item that is held in the slot */
+	/** Pointer to item that is held in the slot */
 	UPROPERTY(VisibleAnywhere, Instanced, BlueprintGetter= "GetItem", BlueprintSetter= "SetItem", Category= "Properties|ItemSlot")
 	const UVCItemDataAsset* Item;
 };

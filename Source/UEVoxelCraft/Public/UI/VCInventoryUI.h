@@ -24,9 +24,9 @@ public:
 public:
 	void InitializeWidget();
 
-	void UpdateUI();
+	void UpdateUI() const;
 
-	void UpdateUIAt(const int Index);
+	void UpdateUIAt(const int Index) const;
 
 	void SetOwner(UVCInventoryComponent* InOutOwner);
 protected:
